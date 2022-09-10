@@ -93,3 +93,15 @@ function futil.equals(a, b)
 		return size_a == futil.table_size(b)
 	end
 end
+
+
+
+function futil.count_elements(t)
+	local counts = {}
+	if t then
+		for _, item in ipairs(t) do
+			counts[item] = (counts[item] or 0) + 1
+		end
+	end
+	return counts
+end
