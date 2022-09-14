@@ -112,7 +112,7 @@ local function parse(tokens, i, parsed)
 	return parsed, i
 end
 
-local function unparse(parsed, parts)
+local function unparse_and_strip(parsed, parts)
 	parts = parts or {}
 	for _, part in ipairs(parsed) do
 		if type(part) == "string" then
@@ -127,13 +127,78 @@ local function unparse(parsed, parts)
 
 			elseif part.domain then
 				--table.insert(parts, ("\27(T@%s)"):format(part.domain))
-				unparse(part, parts)
+				unparse_and_strip(part, parts)
 				--table.insert(parts, "\27E")
 
 			else
 				--table.insert(parts, "\27F")
-				unparse(part, parts)
+				unparse_and_strip(part, parts)
 				--table.insert(parts, "\27E")
+
+			end
+		end
+	end
+
+	return parts
+end
+
+local function erase_after_newline(parsed, erasing)
+	local single_line_parsed = {}
+
+	for _, piece in ipairs(parsed) do
+		if type(piece) == "string" then
+			if not erasing then
+				if piece:find("\n") then
+					erasing = true
+					local single_line = piece:match("^([^\n]*)\n")
+					table.insert(single_line_parsed, single_line)
+
+				else
+					table.insert(single_line_parsed, piece)
+				end
+			end
+
+		elseif piece.type == "bgcolor" or piece.type == "color" then
+			table.insert(single_line_parsed, piece)
+
+		elseif piece.type == "escape" then
+			table.insert(single_line_parsed, erase_after_newline(piece, erasing))
+
+		elseif piece.type == "translation" then
+			local stuff = erase_after_newline(piece, erasing)
+			stuff.domain = piece.domain
+			table.insert(single_line_parsed, stuff)
+
+		else
+			error(("unknown type %s"):format(piece.type))
+		end
+	end
+
+	return single_line_parsed
+end
+
+local function unparse(parsed, parts)
+	parts = parts or {}
+	for _, part in ipairs(parsed) do
+		if type(part) == "string" then
+			table.insert(parts, part)
+
+		else
+			if part.type == "bgcolor" then
+				table.insert(parts, ("\27(b@%s)"):format(part.color))
+
+			elseif part.type == "color" then
+				table.insert(parts, ("\27(c@%s)"):format(part.color))
+
+			elseif part.domain then
+				table.insert(parts, ("\27(T@%s)"):format(part.domain))
+				unparse(part, parts)
+				table.insert(parts, "\27E")
+
+			else
+				table.insert(parts, "\27F")
+				unparse(part, parts)
+				table.insert(parts, "\27E")
 
 			end
 		end
@@ -145,5 +210,14 @@ end
 function futil.strip_translation(msg)
 	local tokens = tokenize(msg)
 	local parsed = parse(tokens)
-	return table.concat(unparse(parsed), "")
+	return table.concat(unparse_and_strip(parsed), "")
+end
+
+function futil.get_safe_short_description(itemstack)
+	local description = itemstack:get_description()
+	local tokens = tokenize(description)
+	local parsed = parse(tokens)
+	local single_line_parsed = erase_after_newline(parsed)
+	local single_line = table.concat(unparse(single_line_parsed), "")
+	return single_line
 end
