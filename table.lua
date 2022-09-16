@@ -82,6 +82,10 @@ function futil.equals(a, b)
 	end
 	if t ~= "table" then
 		return a == b
+
+	elseif a == b then
+		return true
+
 	else
 		local size_a = 0
 		for key, value in pairs(a) do
