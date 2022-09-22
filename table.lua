@@ -98,8 +98,6 @@ function futil.equals(a, b)
 	end
 end
 
-
-
 function futil.count_elements(t)
 	local counts = {}
 	if t then
@@ -108,4 +106,14 @@ function futil.count_elements(t)
 		end
 	end
 	return counts
+end
+
+function futil.sets_intersect(set1, set2)
+	for k in pairs(set1) do
+		if set2[k] then
+			return true
+		end
+	end
+
+	return false
 end

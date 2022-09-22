@@ -25,8 +25,11 @@ futil = {
 }
 
 futil.dofile("class")
+
 futil.dofile("deque")
+futil.dofile("exceptions")
 futil.dofile("groups")
+futil.dofile("inventory")
 futil.dofile("items")
 futil.dofile("memoization")
 futil.dofile("pairing_heap")
