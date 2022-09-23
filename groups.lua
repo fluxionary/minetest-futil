@@ -43,6 +43,8 @@ function futil.get_items_with_group(group)
 end
 
 minetest.register_on_mods_loaded(function()
+	-- it's not 100% safe to assume items and groups can't change after this point.
+	-- but please, don't do that :\
 	local items_by_group = {}
 
 	for item, def in pairs(minetest.registered_items) do

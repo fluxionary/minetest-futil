@@ -13,26 +13,26 @@ function futil.formspec_pos(pos)
 	return ("%i,%i,%i"):format(pos.x, pos.y, pos.z)
 end
 
-function futil.iterate_area(start, stop)
-	local cur = table.copy(start)
+function futil.iterate_area(minp, maxp)
+	local cur = table.copy(minp)
 	cur.x = cur.x - 1
 	return function()
-		if cur.z > stop.z then
+		if cur.z > maxp.z then
 			return
 		end
 
 		cur.x = cur.x + 1
-		if cur.x > stop.x then
-			cur.x = start.x
+		if cur.x > maxp.x then
+			cur.x = minp.x
 			cur.y = cur.y + 1
 		end
 
-		if cur.y > stop.y then
-			cur.y = start.y
+		if cur.y > maxp.y then
+			cur.y = minp.y
 			cur.z = cur.z + 1
 		end
 
-		if cur.z <= stop.z then
+		if cur.z <= maxp.z then
 			return vector.copy(cur)
 		end
 	end

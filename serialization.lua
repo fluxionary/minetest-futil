@@ -1,25 +1,27 @@
 
-function futil.parse_lua(code)
-	local f = loadstring(("return %s"):format(code))
-	if f then
-		return f()
-	end
-end
-
-
 function futil.serialize(x)
 	if type(x) == "number" or type(x) == "boolean" or type(x) == "nil" then
 		return tostring(x)
+
 	elseif type(x) == "string" then
 		return ("%q"):format(x)
+
 	elseif type(x) == "table" then
 		local parts = {}
 		for k, v in futil.pairs_by_key(x) do
 			table.insert(parts, ("[%s] = %s"):format(futil.serialize(k), futil.serialize(v)))
 		end
 		return ("{%s}"):format(table.concat(parts, ", "))
+
 	else
 		error(("can't serialize type %s"):format(type(x)))
+	end
+end
+
+function futil.deserialize(data)
+	local f = loadstring(("return %s"):format(data))
+	if f then
+		return f()
 	end
 end
 
