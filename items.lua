@@ -14,15 +14,20 @@ function futil.resolve_item(item)
 	end
 end
 
---[[
-alternative version:
-return (
-	item1:get_name() == item2:get_name() and
-	item1:get_count() == item2:get_count() and
-	item1:get_wear() == item2:get_wear() and
-	item1:get_meta():equals(item2:get_meta())
-)
-]]
-function futil.items_equals(item1, item2)
-	return futil.equals(ItemStack(item1):to_table(), ItemStack(item2):to_table())
+if ItemStack().equals then
+	-- https://github.com/minetest/minetest/pull/12771
+	function futil.items_equals(item1, item2)
+		item1 = type(item1) == "userdata" and item1 or ItemStack(item1)
+		item2 = type(item2) == "userdata" and item2 or ItemStack(item2)
+
+		return item1 == item2
+	end
+
+else
+	function futil.items_equals(item1, item2)
+		item1 = type(item1) == "userdata" and item1 or ItemStack(item1)
+		item2 = type(item2) == "userdata" and item2 or ItemStack(item2)
+
+		return futil.equals(item1:to_table(), item2:to_table())
+	end
 end
