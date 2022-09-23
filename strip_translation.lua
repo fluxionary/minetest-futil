@@ -213,8 +213,9 @@ function futil.strip_translation(msg)
 	return table.concat(unparse_and_strip(parsed), "")
 end
 
-function futil.get_safe_short_description(itemstack)
-	local description = itemstack:get_description()
+function futil.get_safe_short_description(item)
+	item = type(item) == "userdata" and item or ItemStack(item)
+	local description = item:get_description()
 	local tokens = tokenize(description)
 	local parsed = parse(tokens)
 	local single_line_parsed = erase_after_newline(parsed)
