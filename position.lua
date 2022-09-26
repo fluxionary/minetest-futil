@@ -57,19 +57,20 @@ function futil.iterate_volume(pos, radius)
 	return futil.iterate_area(vector.subtract(pos, radius), vector.add(pos, radius))
 end
 
+function futil.is_pos_in_bounds(m, pos, M)
+	return (
+		in_bounds(m.x, pos.x, M.x) and
+		in_bounds(m.y, pos.y, M.y) and
+		in_bounds(m.z, pos.z, M.z)
+	)
+end
+
 function futil.get_world_bounds()
 	return min_p, max_p
 end
 
 function futil.is_inside_world_bounds(pos)
-	local x = pos.x
-	local y = pos.y
-	local z = pos.z
-	return (
-		in_bounds(min_i, x, max_i) and
-		in_bounds(min_i, y, max_i) and
-		in_bounds(min_i, z, max_i)
-	)
+	return futil.is_pos_in_bounds(min_p, pos, max_p)
 end
 
 function futil.bound_position_to_world(pos)
