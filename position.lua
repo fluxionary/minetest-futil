@@ -1,19 +1,23 @@
 local in_bounds = futil.in_bounds
 local bound = futil.bound
 
-local map_blocksize = 16
-local chunksize = tonumber(minetest.settings:get("chunksize")) or 5
+local mapblock_size = 16
+local chunksize = math.floor(tonumber(minetest.settings:get("chunksize")) or 5)
 local max_mapgen_limit = 31007
-local mapgen_limit = tonumber(minetest.settings:get("mapgen_limit")) or max_mapgen_limit
-local mapgen_limit_b = math.floor(bound(0, mapgen_limit, max_mapgen_limit) / map_blocksize)
-local mapgen_limit_min = -mapgen_limit_b * map_blocksize
-local mapgen_limit_max = (mapgen_limit_b + 1) * map_blocksize - 1
+local mapgen_limit = math.floor(tonumber(minetest.settings:get("mapgen_limit"))) or max_mapgen_limit
+local mapgen_limit_b = math.floor(bound(0, mapgen_limit, max_mapgen_limit) / mapblock_size)
+local mapgen_limit_min = -mapgen_limit_b * mapblock_size
+local mapgen_limit_max = (mapgen_limit_b + 1) * mapblock_size - 1
 
-local min_i = mapgen_limit_min + (map_blocksize * chunksize)
-local max_i = mapgen_limit_max - (map_blocksize * chunksize)
+local map_min_i = mapgen_limit_min + (mapblock_size * chunksize)
+local map_max_i = mapgen_limit_max - (mapblock_size * chunksize)
 
-local min_p = vector.new(min_i, min_i, min_i)
-local max_p = vector.new(max_i, max_i, max_i)
+local map_min_p = vector.new(map_min_i, map_min_i, map_min_i)
+local map_max_p = vector.new(map_max_i, map_max_i, map_max_i)
+
+function futil.get_bounds(pos, radius)
+	return vector.subtract(pos, radius), vector.add(pos, radius)
+end
 
 function futil.get_blockpos(pos)
     return vector.new(math.floor(pos.x / 16), math.floor(pos.y / 16), math.floor(pos.z / 16))
@@ -54,29 +58,29 @@ function futil.iterate_area(minp, maxp)
 end
 
 function futil.iterate_volume(pos, radius)
-	return futil.iterate_area(vector.subtract(pos, radius), vector.add(pos, radius))
+	return futil.iterate_area(futil.get_bounds(pos, radius))
 end
 
-function futil.is_pos_in_bounds(m, pos, M)
+function futil.is_pos_in_bounds(min_p, pos, max_p)
 	return (
-		in_bounds(m.x, pos.x, M.x) and
-		in_bounds(m.y, pos.y, M.y) and
-		in_bounds(m.z, pos.z, M.z)
+		in_bounds(min_p.x, pos.x, max_p.x) and
+		in_bounds(min_p.y, pos.y, max_p.y) and
+		in_bounds(min_p.z, pos.z, max_p.z)
 	)
 end
 
 function futil.get_world_bounds()
-	return min_p, max_p
+	return map_min_p, map_max_p
 end
 
 function futil.is_inside_world_bounds(pos)
-	return futil.is_pos_in_bounds(min_p, pos, max_p)
+	return futil.is_pos_in_bounds(map_min_p, pos, map_max_p)
 end
 
 function futil.bound_position_to_world(pos)
 	return vector.new(
-		bound(min_i, pos.x, max_i),
-		bound(min_i, pos.y, max_i),
-		bound(min_i, pos.z, max_i)
+		bound(map_min_i, pos.x, map_max_i),
+		bound(map_min_i, pos.y, map_max_i),
+		bound(map_min_i, pos.z, map_max_i)
 	)
 end
