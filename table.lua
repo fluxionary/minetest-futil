@@ -62,7 +62,7 @@ function futil.pairs_by_key(t, sort_function)
 	end
 end
 
-function futil.table_size(t)
+local function table_size(t)
 	local size = 0
 	for _ in pairs(t) do
 		size = size + 1
@@ -70,32 +70,39 @@ function futil.table_size(t)
 	return size
 end
 
+futil.table_size = table_size
+
 function futil.table_is_empty(t)
 	return next(t) == nil
 end
 
-function futil.equals(a, b)
+local function equals(a, b)
 	local t = type(a)
+
 	if t ~= type(b) then
 		return false
 	end
+
 	if t ~= "table" then
 		return a == b
 
 	elseif a == b then
 		return true
-
-	else
-		local size_a = 0
-		for key, value in pairs(a) do
-			if not futil.equals(value, b[key]) then
-				return false
-			end
-			size_a = size_a + 1
-		end
-		return size_a == futil.table_size(b)
 	end
+
+	local size_a = 0
+
+	for key, value in pairs(a) do
+		if not equals(value, b[key]) then
+			return false
+		end
+		size_a = size_a + 1
+	end
+
+	return size_a == table_size(b)
 end
+
+futil.equals = equals
 
 function futil.count_elements(t)
 	local counts = {}
