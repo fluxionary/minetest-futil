@@ -24,10 +24,12 @@ if ItemStack().equals then
 	end
 
 else
+	local equals = futil.equals
+
 	function futil.items_equals(item1, item2)
 		item1 = type(item1) == "userdata" and item1 or ItemStack(item1)
 		item2 = type(item2) == "userdata" and item2 or ItemStack(item2)
 
-		return futil.equals(item1:to_table(), item2:to_table())
+		return equals(item1:to_table(), item2:to_table())
 	end
 end
