@@ -2,12 +2,16 @@
 
 a bunch of simiple lua routines and data structures
 
-## data structures
+WARNING: i am contemplating breaking up the api into multiple namespaces, anticipate changes
+
+## classes
 
 * `futil.class1(super)`
   a simple class w/ optional inheritance
 * `futil.class(...)`
   a less simple class w/ multiple inheritance and `is_a` support
+
+## data structures
 
 * `futil.Deque`
   a deque class. supported methods:

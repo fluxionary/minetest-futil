@@ -1,14 +1,14 @@
+-- luacheck: globals table
 
-function futil.table_set_all(t1, t2)
+function table:set_all(t2)
 	for k,v in pairs(t2) do
-		t1[k] = v
+		self[k] = v
 	end
-	return t1
 end
 
-function futil.pairs_by_value(t, sort_function)
+function table:pairs_by_value(sort_function)
 	local s = {}
-	for k, v in pairs(t) do
+	for k, v in pairs(self) do
 		table.insert(s, {k, v})
 	end
 
@@ -34,9 +34,9 @@ function futil.pairs_by_value(t, sort_function)
 	end
 end
 
-function futil.pairs_by_key(t, sort_function)
+function table:pairs_by_key(sort_function)
 	local s = {}
-	for k, v in pairs(t) do
+	for k, v in pairs(self) do
 		table.insert(s, {k, v})
 	end
 
@@ -62,18 +62,18 @@ function futil.pairs_by_key(t, sort_function)
 	end
 end
 
-local function table_size(t)
+function table:size()
 	local size = 0
-	for _ in pairs(t) do
+	for _ in pairs(self) do
 		size = size + 1
 	end
 	return size
 end
 
-futil.table_size = table_size
+local table_size = table.size
 
-function futil.table_is_empty(t)
-	return next(t) == nil
+function table:is_empty()
+	return next(self) == nil
 end
 
 local function equals(a, b)
@@ -104,22 +104,48 @@ end
 
 futil.equals = equals
 
-function futil.count_elements(t)
+function table:count_elements()
 	local counts = {}
-	if t then
-		for _, item in ipairs(t) do
-			counts[item] = (counts[item] or 0) + 1
-		end
+	for _, item in ipairs(self) do
+		counts[item] = (counts[item] or 0) + 1
 	end
 	return counts
 end
 
-function futil.sets_intersect(set1, set2)
-	for k in pairs(set1) do
+function table:sets_intersect(set2)
+	for k in pairs(self) do
 		if set2[k] then
 			return true
 		end
 	end
 
 	return false
+end
+
+function futil.list(iterator)
+	local t = {}
+	local v = iterator()
+	while v do
+		table.insert(t, v)
+		v = iterator()
+	end
+	return t
+end
+
+function futil.list_multiple(iterator)
+	local t = {}
+	local v = {iterator()}
+	while #v do
+		table.insert(t, v)
+		v = {iterator()}
+	end
+	return t
+end
+
+function table:iterate()
+	local i = 0
+	return function()
+		i = i + 1
+		return self[i]
+	end
 end

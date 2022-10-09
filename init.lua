@@ -24,20 +24,7 @@ futil = {
 	end,
 }
 
-futil.dofile("class")
 
-futil.dofile("deque") -- depends on class
-futil.dofile("exception")
-futil.dofile("group")
-futil.dofile("inventory")
-futil.dofile("memoization")
-futil.dofile("number")
-futil.dofile("pairing_heap") -- depends on class
-futil.dofile("position")
-futil.dofile("serialization")
-futil.dofile("string")
-futil.dofile("strip_translation")
-futil.dofile("table")
-futil.dofile("item")  -- depends on table
-futil.dofile("texture")
-futil.dofile("time")
+futil.dofile("util", "init")
+futil.dofile("collections", "init") -- depends on util
+futil.dofile("minetest", "init") -- depends on util

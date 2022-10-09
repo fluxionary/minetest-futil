@@ -1,4 +1,6 @@
-function futil.truncate(s, max_length, suffix)
+-- luacheck: globals string
+
+function string.truncate(s, max_length, suffix)
 	suffix = suffix or "..."
 
 	if s:len() > max_length then
@@ -8,6 +10,6 @@ function futil.truncate(s, max_length, suffix)
 	end
 end
 
-function futil.lc_cmp(a, b)
+function string.lc_cmp(a, b)
     return a:lower() < b:lower()
 end
