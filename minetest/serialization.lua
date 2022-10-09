@@ -8,7 +8,7 @@ function futil.serialize(x)
 
 	elseif type(x) == "table" then
 		local parts = {}
-		for k, v in futil.pairs_by_key(x) do
+		for k, v in table.pairs_by_key(x) do
 			table.insert(parts, ("[%s] = %s"):format(futil.serialize(k), futil.serialize(v)))
 		end
 		return ("{%s}"):format(table.concat(parts, ", "))
