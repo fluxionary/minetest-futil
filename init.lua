@@ -10,6 +10,7 @@ futil = {
 
 	modname = modname,
 	modpath = modpath,
+	mod_storage = minetest.get_mod_storage(),
 	S = S,
 
 	has = {
@@ -28,3 +29,5 @@ futil = {
 futil.dofile("util", "init")
 futil.dofile("collections", "init") -- depends on util
 futil.dofile("minetest", "init") -- depends on util
+
+futil.mod_storage = nil
