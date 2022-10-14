@@ -1,11 +1,13 @@
-local in_bounds = futil.in_bounds
-local bound = futil.bound
+local m_floor = math.floor
+
+local in_bounds = math.in_bounds
+local bound = math.bound
 
 local mapblock_size = 16
-local chunksize = math.floor(tonumber(minetest.settings:get("chunksize")) or 5)
+local chunksize = m_floor(tonumber(minetest.settings:get("chunksize")) or 5)
 local max_mapgen_limit = 31007
-local mapgen_limit = math.floor(tonumber(minetest.settings:get("mapgen_limit"))) or max_mapgen_limit
-local mapgen_limit_b = math.floor(bound(0, mapgen_limit, max_mapgen_limit) / mapblock_size)
+local mapgen_limit = m_floor(tonumber(minetest.settings:get("mapgen_limit"))) or max_mapgen_limit
+local mapgen_limit_b = m_floor(bound(0, mapgen_limit, max_mapgen_limit) / mapblock_size)
 local mapgen_limit_min = -mapgen_limit_b * mapblock_size
 local mapgen_limit_max = (mapgen_limit_b + 1) * mapblock_size - 1
 
@@ -13,6 +15,7 @@ local map_min_i = mapgen_limit_min + (mapblock_size * chunksize)
 local map_max_i = mapgen_limit_max - (mapblock_size * chunksize)
 
 local v_add = vector.add
+local v_copy = vector.copy
 local v_new = vector.new
 local v_sort = vector.sort
 local v_sub = vector.subtract
@@ -25,7 +28,7 @@ function futil.get_bounds(pos, radius)
 end
 
 function futil.get_blockpos(pos)
-    return v_new(math.floor(pos.x / 16), math.floor(pos.y / 16), math.floor(pos.z / 16))
+    return v_new(m_floor(pos.x / 16), m_floor(pos.y / 16), m_floor(pos.z / 16))
 end
 
 function futil.get_block_bounds(blockpos)
@@ -58,7 +61,7 @@ function futil.iterate_area(minp, maxp)
 		end
 
 		if cur.z <= maxp.z then
-			return vector.copy(cur)
+			return v_copy(cur)
 		end
 	end
 end
