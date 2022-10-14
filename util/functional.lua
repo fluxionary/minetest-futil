@@ -1,6 +1,7 @@
 local functional = {}
 
 function functional.noop()
+	-- the NOTHING function does nothing.
 end
 
 function functional.identity(x)
