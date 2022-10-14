@@ -67,43 +67,6 @@ local function cut(node)
 	node.sibling = nil
 end
 
--- TODO what is this and why is it not used
---[[
-local function extract(node)
-	local children = {}
-	local node2 = node.child
-	local sibling = node2.sibling
-
-	while node2 and sibling do
-		local next = sibling.sibling
-		node2.parent = nil
-		node2.sibling = nil
-		sibling.parent = nil
-		sibling.sibling = nil
-		table.insert(children, meld(node2, sibling))
-		node2 = next
-		sibling = node2.sibling
-	end
-
-	if node2 then
-		table.insert(children, node2)
-	end
-
-	if #children == 0 then
-		return {}
-	end
-
-	local root = children[#children]
-	for i = #children - 1, 1, -1 do
-		root = meld(root, children[i])
-	end
-
-	root.parent = nil
-
-	return root
-end
-]]
-
 local PairingHeap = futil.class1()
 
 function PairingHeap:_new()
