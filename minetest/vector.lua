@@ -1,3 +1,5 @@
+-- luacheck: globals vector
+
 local m_floor = math.floor
 
 local in_bounds = math.in_bounds
@@ -45,22 +47,22 @@ function futil.iterate_area(minp, maxp)
 	local cur = table.copy(minp)
 	cur.x = cur.x - 1
 	return function()
-		if cur.z > maxp.z then
+		if cur.y > maxp.y then
 			return
 		end
 
 		cur.x = cur.x + 1
 		if cur.x > maxp.x then
 			cur.x = minp.x
-			cur.y = cur.y + 1
-		end
-
-		if cur.y > maxp.y then
-			cur.y = minp.y
 			cur.z = cur.z + 1
 		end
 
-		if cur.z <= maxp.z then
+		if cur.z > maxp.z then
+			cur.z = minp.z
+			cur.y = cur.y + 1
+		end
+
+		if cur.y <= maxp.y then
 			return v_copy(cur)
 		end
 	end
@@ -93,4 +95,9 @@ function futil.bound_position_to_world(pos)
 		bound(map_min_i, pos.y, map_max_i),
 		bound(map_min_i, pos.z, map_max_i)
 	)
+end
+
+function vector.volume(pos1, pos2)
+	local minp, maxp = v_sort(pos1, pos2)
+	return (maxp.x - minp.x + 1) * (maxp.y - minp.y + 1) * (maxp.z - minp.z + 1)
 end
