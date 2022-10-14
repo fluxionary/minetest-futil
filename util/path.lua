@@ -3,5 +3,5 @@ function futil.path_concat(...)
 end
 
 function futil.path_split(path)
-	return string.split(path, DIR_DELIM)
+	return string.split(path, DIR_DELIM, true)
 end
