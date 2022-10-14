@@ -1,14 +1,14 @@
 -- luacheck: globals table
 
-function table:set_all(t2)
+function table.set_all(t1, t2)
 	for k,v in pairs(t2) do
-		self[k] = v
+		t1[k] = v
 	end
 end
 
-function table:pairs_by_value(sort_function)
+function table.pairs_by_value(t, sort_function)
 	local s = {}
-	for k, v in pairs(self) do
+	for k, v in pairs(t) do
 		table.insert(s, {k, v})
 	end
 
@@ -34,9 +34,9 @@ function table:pairs_by_value(sort_function)
 	end
 end
 
-function table:pairs_by_key(sort_function)
+function table.pairs_by_key(t, sort_function)
 	local s = {}
-	for k, v in pairs(self) do
+	for k, v in pairs(t) do
 		table.insert(s, {k, v})
 	end
 
@@ -62,9 +62,9 @@ function table:pairs_by_key(sort_function)
 	end
 end
 
-function table:size()
+function table.size(t)
 	local size = 0
-	for _ in pairs(self) do
+	for _ in pairs(t) do
 		size = size + 1
 	end
 	return size
@@ -72,8 +72,8 @@ end
 
 local table_size = table.size
 
-function table:is_empty()
-	return next(self) == nil
+function table.is_empty(t)
+	return next(t) == nil
 end
 
 local function equals(a, b)
@@ -104,16 +104,16 @@ end
 
 futil.equals = equals
 
-function table:count_elements()
+function table.count_elements(t)
 	local counts = {}
-	for _, item in ipairs(self) do
+	for _, item in ipairs(t) do
 		counts[item] = (counts[item] or 0) + 1
 	end
 	return counts
 end
 
-function table:sets_intersect(set2)
-	for k in pairs(self) do
+function table.sets_intersect(set1, set2)
+	for k in pairs(set1) do
 		if set2[k] then
 			return true
 		end
@@ -142,10 +142,10 @@ function futil.list_multiple(iterator)
 	return t
 end
 
-function table:iterate()
+function table.iterate(t)
 	local i = 0
 	return function()
 		i = i + 1
-		return self[i]
+		return t[i]
 	end
 end
