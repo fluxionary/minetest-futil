@@ -1,5 +1,3 @@
-
-
 local DefaultTable = futil.class1()
 
 function DefaultTable:_init(initializer)
