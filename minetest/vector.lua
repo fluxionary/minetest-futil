@@ -118,21 +118,21 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 	local z2 = pos2.z - (pos2.z % chunk_size) + chunk_span
 
     local chunks = {}
-    for x = x1, x2, chunk_size do
-		local x_min = m_max(pos1.x, x)
-		local x_max = m_min(pos2.x, x + chunk_span)
+	for y = y1, y2, chunk_size do
+		local y_min = m_max(pos1.y, y)
+		local y_max = m_min(pos2.y, y + chunk_span)
 
-        for y = y1, y2, chunk_size do
-			local y_min = m_max(pos1.y, y)
-			local y_max = m_min(pos2.y, y + chunk_span)
+		for x = x1, x2, chunk_size do
+			local x_min = m_max(pos1.x, x)
+			local x_max = m_min(pos2.x, x + chunk_span)
 
-            for z = z1, z2, chunk_size do
+			for z = z1, z2, chunk_size do
 				local z_min = m_max(pos1.z, z)
 				local z_max = m_min(pos2.z, z + chunk_span)
 
-                table.insert(chunks, {v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max)})
-            end
-        end
+				table.insert(chunks, {v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max)})
+			end
+		end
     end
 
     return chunks
