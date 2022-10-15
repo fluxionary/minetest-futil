@@ -90,19 +90,19 @@ function functional.compose(a, b)
 	end
 end
 
-function functional.ifilter(func, i)
+function functional.ifilter(pred, i)
 	local v
 	return function()
 		v = i()
-		while v ~= nil and not func(v) do
+		while v ~= nil and not pred(v) do
 			v = i()
 		end
 		return v
 	end
 end
 
-function functional.filter(func, t)
-	return functional.ifilter(func, table.iterate(t))
+function functional.filter(pred, t)
+	return functional.ifilter(pred, table.iterate(t))
 end
 
 futil.functional = functional

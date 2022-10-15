@@ -1,19 +1,5 @@
 local iterators = {}
 
-function iterators.concat(i1, i2)
-	return function()
-		if i1 then
-			local v = i1()
-			if v then
-				return v
-			else
-				i1 = nil
-			end
-		end
-		return i2()
-	end
-end
-
 function iterators.range(...)
 	local a, b, c = ...
 	if type(a) ~= "number" then
@@ -52,12 +38,43 @@ function iterators.range(...)
 	end
 end
 
-function iterators.n_of(n, o)
-	local t = {}
-	for _ = 1, n do
-		table.insert(t, o)
+function iterators.repeat_(value, times)
+	if times then
+		local i = 0
+		return function()
+			i = i + 1
+			if i <= times then
+				return value
+			end
+		end
+
+	else
+		return function() return value
+		end
 	end
-	return t
+end
+
+function iterators.chain(...)
+	local arg = {...}
+	local i = 1
+
+	return function()
+		while i <= #arg do
+			local v = arg[i]()
+			if v then
+				return v
+			end
+		end
+	end
+end
+
+function iterators.count(start, step)
+	step = step or 1
+	return function()
+		local rv = start
+		start = start + step
+		return rv
+	end
 end
 
 futil.iterators = iterators

@@ -134,6 +134,23 @@ WARNING: i am contemplating breaking up the api into multiple namespaces, antici
   applies binary function `func` to successive elements in t and a "total". supply `initial` if possibly `#t == 0`.
   e.g. `local sum = function(values) return reduce(function(a, b) return a + b end, values, 0) end`.
 
+* `functional.partial(func, ...)`
+
+  curries `func`. `partial(func, a, b, c)(d, e, f) == func(a, b, c, d, e, f)
+
+* `functional.compose(a, b)`
+
+  binary operator which composes two functions. `compose(a, b)(x) == a(b(x))`
+
+* `functional.ifilter(pred, i)`
+
+  returns an interator which returns the values of iterator `i` which match predicate `pred`
+
+* `functional.filter(pred, t)`
+
+  returns an interator which returns the values of table `t` which match predicate `pred`
+
+### iterators
 
 
 
