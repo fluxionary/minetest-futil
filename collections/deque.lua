@@ -56,4 +56,14 @@ function Deque:pop_back()
 	return value
 end
 
+function Deque:clear()
+	for k in pairs(self) do
+		if type(k) == "number" then
+			self[k] = nil
+		end
+	end
+	self._a = 0
+	self._z = -1
+end
+
 futil.Deque = Deque
