@@ -33,6 +33,7 @@ function futil.class(...)
 	}
 
 	local parents = {...}
+
 	if #parents > 0 then
 		meta.__index = function(self, key)
 			for i = #parents, 1, -1 do
@@ -45,6 +46,7 @@ function futil.class(...)
 	end
 
     local class = {}
+	class._parents = parents
 	class.__index = class
 	setmetatable(class, meta)
 
