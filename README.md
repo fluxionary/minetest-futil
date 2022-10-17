@@ -134,25 +134,38 @@ WARNING: i am contemplating breaking up the api into multiple namespaces, antici
   applies binary function `func` to successive elements in t and a "total". supply `initial` if possibly `#t == 0`.
   e.g. `local sum = function(values) return reduce(function(a, b) return a + b end, values, 0) end`.
 
-* `functional.partial(func, ...)`
+* `futil.functional.partial(func, ...)`
 
   curries `func`. `partial(func, a, b, c)(d, e, f) == func(a, b, c, d, e, f)
 
-* `functional.compose(a, b)`
+* `futil.functional.compose(a, b)`
 
   binary operator which composes two functions. `compose(a, b)(x) == a(b(x))`
 
-* `functional.ifilter(pred, i)`
+* `futil.functional.ifilter(pred, i)`
 
   returns an interator which returns the values of iterator `i` which match predicate `pred`
 
-* `functional.filter(pred, t)`
+* `futil.functional.filter(pred, t)`
 
   returns an interator which returns the values of table `t` which match predicate `pred`
 
 ### iterators
 
+* `futil.iterators.range(...)`
 
+  * one arg: return an iterator from 1 to x.
+  * two args: return an iterator from x to y
+  * three args: return an iterator from x to y, incrementing by z
+
+* `iterators.repeat_(value, times)`
+
+  * times = nil: return `value` forever
+  * times = positive number: return `value` `times` times
+
+* `iterators.chain(...)`
+
+  given a sequence of iterators, return an iterator which will return the values from each in turn.
 
 ## minetest-specific routines
 
