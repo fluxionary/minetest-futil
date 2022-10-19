@@ -1,6 +1,7 @@
 futil.dofile("minetest", "group")
 futil.dofile("minetest", "inventory")
 futil.dofile("minetest", "item")
+futil.dofile("minetest", "object_properties")
 futil.dofile("minetest", "serialization")
 futil.dofile("minetest", "strip_translation")
 futil.dofile("minetest", "texture")
