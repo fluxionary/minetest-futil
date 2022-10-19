@@ -67,6 +67,29 @@ local function cut(node)
 	node.sibling = nil
 end
 
+local function need_to_move(node, new_priority)
+	local cur_priority = node.priority
+	if cur_priority < new_priority then
+		-- priority increase, make sure we don't dominate our parent
+		local parent = node.parent
+		return (parent and new_priority > parent.priority)
+
+	elseif cur_priority > new_priority then
+		-- priority decrease, make sure our children don't dominate us
+		local child = node.child
+		while child and child ~= node do
+			if child.priority > new_priority then
+				return true
+			end
+			child = child.sibling
+		end
+		return false
+
+	else
+		return false
+	end
+end
+
 local PairingHeap = futil.class1()
 
 function PairingHeap:_new()
@@ -105,29 +128,6 @@ function PairingHeap:get_priority(value)
 	return self._nodes_by_value[value].priority
 end
 
-local function need_to_move(node, new_priority)
-	local cur_priority = node.priority
-	if cur_priority < new_priority then
-		-- priority increase, make sure we don't dominate our parent
-		local parent = node.parent
-		return (parent and new_priority > parent.priority)
-
-	elseif cur_priority > new_priority then
-		-- priority decrease, make sure our children don't dominate us
-		local child = node.child
-		while child and child ~= node do
-			if child.priority > new_priority then
-				return true
-			end
-			child = child.sibling
-		end
-		return false
-
-	else
-		return false
-	end
-end
-
 function PairingHeap:set_priority(value, priority)
 	local cur_node = self._nodes_by_value[value]
 	if cur_node then
@@ -148,6 +148,5 @@ function PairingHeap:set_priority(value, priority)
 		self._size = self._size + 1
 	end
 end
-
 
 futil.PairingHeap = PairingHeap
