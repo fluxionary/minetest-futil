@@ -105,4 +105,47 @@ function functional.filter(pred, t)
 	return functional.ifilter(pred, table.iterate(t))
 end
 
+function futil.iall(i)
+	while true do
+		local v = i()
+		if v == false then
+			return false
+
+		elseif v == nil then
+			return true
+		end
+	end
+end
+
+function futil.all(t)
+	for i = 1, #t do
+		if not t[i] then
+			return false
+		end
+	end
+
+	return true
+end
+
+function futil.iany(i)
+	while true do
+		local v = i()
+		if v == nil then
+			return false
+
+		elseif v then
+			return true
+		end
+	end
+end
+
+function futil.any(t)
+	for i = 1, #t do
+		if t[i] then
+			return true
+		end
+	end
+end
+
+
 futil.functional = functional

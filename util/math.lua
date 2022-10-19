@@ -1,5 +1,6 @@
 -- luacheck: globals math
 
+local floor = math.floor
 local max = math.max
 local min = math.min
 
@@ -13,4 +14,8 @@ end
 
 function math.in_bounds(m, v, M)
 	return m <= v and v <= M
+end
+
+function math.is_integer(v)
+	return floor(v) == v
 end
