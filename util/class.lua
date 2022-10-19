@@ -35,7 +35,7 @@ function futil.class(...)
 	local parents = {...}
 
 	if #parents > 0 then
-		meta.__index = function(self, key)
+		meta.__index = function(t, key)
 			for i = #parents, 1, -1 do
 				local v = parents[i][key]
 				if v then
