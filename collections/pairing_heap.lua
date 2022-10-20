@@ -11,10 +11,10 @@ local function add_child(node1, node2)
 end
 
 local function meld(node1, node2)
-	if node1.value == nil then
+	if node1 == nil or node1.value == nil then
 		return node2
 
-	elseif node2.value == nil then
+	elseif node2 == nil or node2.value == nil then
 		return node1
 
 	elseif node1.priority > node2.priority then
@@ -42,6 +42,7 @@ local function merge_pairs(node)
 
 	if siblingsibling then
 		return meld(node, merge_pairs(siblingsibling))
+
 	else
 		return node
 	end
@@ -93,7 +94,6 @@ end
 local PairingHeap = futil.class1()
 
 function PairingHeap:_new()
-	self._max_node = {}
 	self._nodes_by_value = {}
 	self._size = 0
 end
@@ -102,33 +102,46 @@ function PairingHeap:size()
 	return self._size
 end
 
-function PairingHeap:peek_max()
+function PairingHeap:peek()
 	local hn = self._max_node
+
+	if not hn then
+		error("empty")
+	end
+
 	return hn.value, hn.priority
 end
 
-function PairingHeap:delete(value)
+function PairingHeap:remove(value)
 	self:set_priority(value, inf)
 	return self:delete_max()
 end
 
-function PairingHeap:delete_max()
+function PairingHeap:pop()
 	local max = self._max_node
+
+	if not max then
+		error("empty")
+	end
+
 	local child = max.child
 	if child then
 		self._max_node = merge_pairs(child)
 	end
+
 	local value = max._value
+
 	self._nodes_by_value[value] = nil
 	self._size = self._size - 1
+
 	return value
 end
 
-function PairingHeap:get_priority(value)
+function PairingHeap:get_value(value)
 	return self._nodes_by_value[value].priority
 end
 
-function PairingHeap:set_priority(value, priority)
+function PairingHeap:set_value(value, priority)
 	local cur_node = self._nodes_by_value[value]
 	if cur_node then
 		local need_to = need_to_move(cur_node, priority)
