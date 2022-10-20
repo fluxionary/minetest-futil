@@ -33,3 +33,19 @@ else
 		return equals(item1:to_table(), item2:to_table())
 	end
 end
+
+function futil.get_primary_drop(stack)
+	if type(stack) == "string" then
+		stack = ItemStack(stack)
+	end
+
+	local name = stack:get_name()
+	local def = stack:get_definition()
+	local drop = def.drop
+	if not drop then
+		return name
+
+	elseif type(drop) == "" then
+		return nil
+	end
+end

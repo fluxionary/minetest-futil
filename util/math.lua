@@ -5,7 +5,8 @@ local max = math.max
 local min = math.min
 
 function math.idiv(a, b)
-    return (a - (a % b)) / b
+	local rem = (a % b)
+	return (a - rem) / b, rem
 end
 
 function math.bound(m, v, M)

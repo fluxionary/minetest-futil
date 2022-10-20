@@ -1,35 +1,35 @@
 function futil.class1(super)
 	local meta = {
 		__call = function(class, ...)
-	        local obj = setmetatable({}, class)
-	        if obj._init then
-	            obj:_init(...)
-	        end
-	        return obj
-	    end
+			local obj = setmetatable({}, class)
+			if obj._init then
+				obj:_init(...)
+			end
+			return obj
+		end
 	}
 
 	if super then
 		meta.__index = super
 	end
 
-    local class = {}
+	local class = {}
 	class.__index = class
 
 	setmetatable(class, meta)
 
-    return class
+	return class
 end
 
 function futil.class(...)
 	local meta = {
 		__call = function(class, ...)
-	        local obj = setmetatable({}, class)
-	        if obj._init then
-	            obj:_init(...)
-	        end
-	        return obj
-	    end
+			local obj = setmetatable({}, class)
+			if obj._init then
+				obj:_init(...)
+			end
+			return obj
+		end
 	}
 
 	local parents = {...}
@@ -45,7 +45,7 @@ function futil.class(...)
 		end
 	end
 
-    local class = {}
+	local class = {}
 	class._parents = parents
 	class.__index = class
 	setmetatable(class, meta)
@@ -64,5 +64,5 @@ function futil.class(...)
 		return false
 	end
 
-    return class
+	return class
 end

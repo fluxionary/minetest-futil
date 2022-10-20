@@ -147,5 +147,4 @@ function futil.any(t)
 	end
 end
 
-
 futil.functional = functional

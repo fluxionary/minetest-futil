@@ -1,4 +1,3 @@
-
 local function tokenize(s)
 	local tokens = {}
 

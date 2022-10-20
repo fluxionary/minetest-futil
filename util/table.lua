@@ -1,7 +1,7 @@
 -- luacheck: globals table
 
 function table.set_all(t1, t2)
-	for k,v in pairs(t2) do
+	for k, v in pairs(t2) do
 		t1[k] = v
 	end
 end

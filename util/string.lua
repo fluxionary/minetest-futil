@@ -11,5 +11,5 @@ function string.truncate(s, max_length, suffix)
 end
 
 function string.lc_cmp(a, b)
-    return a:lower() < b:lower()
+	return a:lower() < b:lower()
 end

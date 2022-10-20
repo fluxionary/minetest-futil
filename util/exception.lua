@@ -1,5 +1,3 @@
-
-
 function futil.check_call(func)
 	-- wrap a function w/ logic to avoid crashing the game
 	return function(...)

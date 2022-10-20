@@ -1,5 +1,3 @@
-
-
 function futil.get_location_string(inv)
 	local location = inv:get_location()
 	if location.type == "node" then

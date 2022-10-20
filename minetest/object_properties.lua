@@ -59,10 +59,10 @@ local function valid_color_spec(value)
 
 		return (
 			is_number_(x) and in_bounds_(0, x, 255) and is_integer_(x) and
-			is_number_(y) and in_bounds_(0, y, 255) and is_integer_(y) and
-			is_number_(z) and in_bounds_(0, z, 255) and is_integer_(z) and (
+				is_number_(y) and in_bounds_(0, y, 255) and is_integer_(y) and
+				is_number_(z) and in_bounds_(0, z, 255) and is_integer_(z) and (
 				a == nil or
-				(is_number_(a) and in_bounds_(0, a, 255) and is_integer_(a))
+					(is_number_(a) and in_bounds_(0, a, 255) and is_integer_(a))
 			)
 		)
 	end
@@ -93,37 +93,48 @@ local function valid_automatic_face_movement_dir(value)
 	return value == false or is_number(value)
 end
 
+local function valid_hp_max(value)
+	return is_number(value) and is_integer(value) and in_bounds(1, value, 65535)
+end
+
 local object_property = {
-    hp_max = "number",
-    physical = "boolean",
-    collide_with_objects = "boolean",
-    collisionbox = valid_box,
-    selectionbox = valid_box,
-    pointable = "boolean",
-    visual = "string",
-    visual_size = valid_visual_size,
-    mesh = "string",
-    textures = valid_textures,
-    colors = valid_colors,
-    use_texture_alpha = "boolean",
-    spritediv = valid_spritediv,
-    initial_sprite_basepos = valid_spritediv,
-    is_visible = "boolean",
-    makes_footstep_sound = "boolean",
-    automatic_rotate = "number",
-    stepheight = "number",
-    automatic_face_movement_dir = valid_automatic_face_movement_dir,
-    automatic_face_movement_max_rotation_per_sec = "number",
-    backface_culling = "number",
-    glow = "number",
-    nametag = "string",
-    nametag_color = valid_color_spec,
-    nametag_bgcolor = valid_color_spec,
-    infotext = "string",
-    static_save = "boolean",
-    damage_texture_modifier = "string",
-    shaded = "boolean",
-    show_on_minimap = "boolean",
+	visual = "string",
+	visual_size = valid_visual_size,
+	mesh = "string",
+	textures = valid_textures,
+	colors = valid_colors,
+	use_texture_alpha = "boolean",
+	spritediv = valid_spritediv,
+	initial_sprite_basepos = valid_spritediv,
+	is_visible = "boolean",
+	automatic_rotate = "number",
+	automatic_face_movement_dir = valid_automatic_face_movement_dir,
+	automatic_face_movement_max_rotation_per_sec = "number",
+	backface_culling = "number",
+	glow = "number",
+	damage_texture_modifier = "string",
+	shaded = "boolean",
+
+	hp_max = valid_hp_max,
+	physical = "boolean",
+	pointable = "boolean",
+	collide_with_objects = "boolean",
+	collisionbox = valid_box,
+	selectionbox = valid_box,
+
+	makes_footstep_sound = "boolean",
+
+	stepheight = "number",
+
+	nametag = "string",
+	nametag_color = valid_color_spec,
+	nametag_bgcolor = valid_color_spec,
+
+	infotext = "string",
+
+	static_save = "boolean",
+
+	show_on_minimap = "boolean",
 }
 
 function futil.is_property_key(key)
@@ -141,7 +152,7 @@ function futil.is_valid_property_value(key, value)
 		return type(value) == kind
 
 	elseif
-		type(kind) == "function" then
+	type(kind) == "function" then
 		return kind(value)
 
 	else

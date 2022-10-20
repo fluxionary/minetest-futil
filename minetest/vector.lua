@@ -32,12 +32,12 @@ function futil.get_bounds(pos, radius)
 end
 
 function futil.get_blockpos(pos)
-    return v_new(m_floor(pos.x / 16), m_floor(pos.y / 16), m_floor(pos.z / 16))
+	return v_new(m_floor(pos.x / 16), m_floor(pos.y / 16), m_floor(pos.z / 16))
 end
 
 function futil.get_block_bounds(blockpos)
-    return v_new(blockpos.x * 16, blockpos.y * 16, blockpos.z * 16),
-    v_new(blockpos.x * 16 + 15, blockpos.y * 16 + 15, blockpos.z * 16 + 15)
+	return v_new(blockpos.x * 16, blockpos.y * 16, blockpos.z * 16),
+	v_new(blockpos.x * 16 + 15, blockpos.y * 16 + 15, blockpos.z * 16 + 15)
 end
 
 function futil.formspec_pos(pos)
@@ -78,8 +78,8 @@ function futil.is_pos_in_bounds(minp, pos, maxp)
 	minp, maxp = v_sort(minp, maxp)
 	return (
 		in_bounds(minp.x, pos.x, maxp.x) and
-		in_bounds(minp.y, pos.y, maxp.y) and
-		in_bounds(minp.z, pos.z, maxp.z)
+			in_bounds(minp.y, pos.y, maxp.y) and
+			in_bounds(minp.z, pos.z, maxp.z)
 	)
 end
 
@@ -117,7 +117,7 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 	local z1 = pos1.z - (pos1.z % chunk_size)
 	local z2 = pos2.z - (pos2.z % chunk_size) + chunk_span
 
-    local chunks = {}
+	local chunks = {}
 	for y = y1, y2, chunk_size do
 		local y_min = m_max(pos1.y, y)
 		local y_max = m_min(pos2.y, y + chunk_span)
@@ -133,7 +133,7 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 				table.insert(chunks, {v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max)})
 			end
 		end
-    end
+	end
 
-    return chunks
+	return chunks
 end

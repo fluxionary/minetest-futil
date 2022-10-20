@@ -49,7 +49,8 @@ function iterators.repeat_(value, times)
 		end
 
 	else
-		return function() return value
+		return function()
+			return value
 		end
 	end
 end
