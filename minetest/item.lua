@@ -1,3 +1,5 @@
+local f = string.format
+
 function futil.resolve_item(item)
 	local item_stack = ItemStack(item)
 	local name = item_stack:get_name()
@@ -42,10 +44,32 @@ function futil.get_primary_drop(stack)
 	local name = stack:get_name()
 	local def = stack:get_definition()
 	local drop = def.drop
-	if not drop then
+
+	if drop == nil then
 		return name
 
-	elseif type(drop) == "" then
+	elseif drop == "" then
 		return nil
+
+	elseif type(drop) == "string" then
+		return drop
+
+	elseif type(drop) == "table" then
+		local most_common_item
+		local rarity = tonumber("inf")
+
+		for _, item in ipairs(drop.items) do
+			if not (item.tools or item.tool_groups) then
+				if (item.rarity or 1) < rarity then
+					most_common_item = item.items[1]
+					rarity = item.rarity
+				end
+			end
+		end
+
+		return most_common_item
+
+	else
+		error(f("invalid drop of %s? %q", dump(name, drop)))
 	end
 end
