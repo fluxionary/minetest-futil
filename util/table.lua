@@ -99,3 +99,24 @@ function futil.table.iterate(t)
 		return t[i]
 	end
 end
+
+function futil.table.reversed(t)
+    local len = #t
+    local reversed = {}
+
+    for i = len,1,-1 do
+        reversed[len - i + 1] = t[i]
+    end
+
+    return reversed
+end
+
+function futil.table.contains(t, value)
+    for _, v in ipairs(t) do
+        if v == value then
+			return true
+		end
+    end
+
+    return false
+end

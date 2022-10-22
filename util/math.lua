@@ -17,6 +17,26 @@ function futil.math.in_bounds(m, v, M)
 	return m <= v and v <= M
 end
 
+local in_bounds = futil.math.in_bounds
+
 function futil.math.is_integer(v)
 	return floor(v) == v
+end
+
+local is_integer = futil.math.is_integer
+
+function futil.math.is_u8(i)
+    return (
+        type(i) == "number" and
+        is_integer(i) and
+        in_bounds(0, i, 0xFF)
+    )
+end
+
+function futil.math.is_u16(i)
+    return (
+        type(i) == "number" and
+        is_integer(i) and
+        in_bounds(0, i, 0xFFFF)
+    )
 end
