@@ -1,11 +1,9 @@
--- luacheck: globals vector
-
 local m_min = math.min
 local m_max = math.max
 local m_floor = math.floor
 
-local in_bounds = math.in_bounds
-local bound = math.bound
+local in_bounds = futil.math.in_bounds
+local bound = futil.math.bound
 
 local mapblock_size = 16
 local chunksize = m_floor(tonumber(minetest.settings:get("chunksize")) or 5)
@@ -26,6 +24,8 @@ local v_sub = vector.subtract
 
 local map_min_p = v_new(map_min_i, map_min_i, map_min_i)
 local map_max_p = v_new(map_max_i, map_max_i, map_max_i)
+
+futil.vector = {}
 
 function futil.get_bounds(pos, radius)
 	return v_sub(pos, radius), v_add(pos, radius)
@@ -99,7 +99,7 @@ function futil.bound_position_to_world(pos)
 	)
 end
 
-function vector.volume(pos1, pos2)
+function futil.vector.volume(pos1, pos2)
 	local minp, maxp = v_sort(pos1, pos2)
 	return (maxp.x - minp.x + 1) * (maxp.y - minp.y + 1) * (maxp.z - minp.z + 1)
 end

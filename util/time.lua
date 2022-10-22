@@ -1,14 +1,12 @@
-local idiv = math.idiv
+local idiv = futil.math.idiv
 
 function futil.seconds_to_interval(time)
-	local s = time % 60;
-	time = idiv(time, 60)
-	local m = time % 60;
-	time = idiv(time, 60)
-	local h = time % 24;
-	time = idiv(time, 24)
-	local d = time % 365;
-	time = idiv(time, 365)
+	local s, m, h, d
+
+	time, s = idiv(time, 60)
+	time, m = idiv(time, 60)
+	time, h = idiv(time, 24)
+	time, d = idiv(time, 365)
 
 	if time ~= 0 then
 		return ("%d years %d days %02d:%02d:%02d"):format(time, d, h, m, s)

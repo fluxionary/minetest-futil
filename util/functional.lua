@@ -1,5 +1,8 @@
 local functional = {}
 
+local t_iterate = futil.table.iterate
+local t_insert = table.insert
+
 function functional.noop()
 	-- the NOTHING function does nothing.
 end
@@ -16,10 +19,10 @@ function functional.izip(...)
 
 	return function()
 		local t = {}
-		for i in table.iterate(is) do
+		for i in t_iterate(is) do
 			local v = i()
 			if v ~= nil then
-				table.insert(t, v)
+				t_insert(t, v)
 
 			else
 				return
@@ -32,8 +35,8 @@ end
 
 function functional.zip(...)
 	local is = {}
-	for t in table.iterate({...}) do
-		table.insert(is, table.iterate(t))
+	for t in t_iterate({...}) do
+		t_insert(is, t_iterate(t))
 	end
 	return functional.izip(unpack(is))
 end
@@ -65,7 +68,7 @@ function functional.apply(func, t)
 end
 
 function functional.reduce(func, t, initial)
-	local i = table.iterate(t)
+	local i = t_iterate(t)
 	if not initial then
 		initial = i()
 	end
@@ -102,7 +105,7 @@ function functional.ifilter(pred, i)
 end
 
 function functional.filter(pred, t)
-	return functional.ifilter(pred, table.iterate(t))
+	return functional.ifilter(pred, t_iterate(t))
 end
 
 function futil.iall(i)

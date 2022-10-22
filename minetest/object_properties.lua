@@ -3,9 +3,9 @@ local f = string.format
 local iall = futil.iall
 local map = futil.map
 
-local in_bounds = math.in_bounds
+local in_bounds = futil.math.in_bounds
 
-local is_integer = math.is_integer
+local is_integer = futil.math.is_integer
 local is_number = futil.is_number
 local is_string = futil.is_string
 local is_table = futil.is_table

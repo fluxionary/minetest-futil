@@ -1,3 +1,5 @@
+local pairs_by_key = futil.table.pairs_by_key
+
 function futil.serialize(x)
 	if type(x) == "number" or type(x) == "boolean" or type(x) == "nil" then
 		return tostring(x)
@@ -7,7 +9,7 @@ function futil.serialize(x)
 
 	elseif type(x) == "table" then
 		local parts = {}
-		for k, v in table.pairs_by_key(x) do
+		for k, v in pairs_by_key(x) do
 			table.insert(parts, ("[%s] = %s"):format(futil.serialize(k), futil.serialize(v)))
 		end
 		return ("{%s}"):format(table.concat(parts, ", "))
