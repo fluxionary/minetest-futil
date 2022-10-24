@@ -5,7 +5,7 @@ local S = minetest.get_translator(modname)
 futil = {
 	author = "fluxionary",
 	license = "AGPL_v3",
-	version = {year = 2022, month = 9, day = 4},
+	version = os.time({year = 2022, month = 10, day = 24}),
 	fork = "fluxionary",
 
 	modname = modname,
