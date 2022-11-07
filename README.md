@@ -36,7 +36,7 @@ WARNING: i am contemplating breaking up the api into multiple namespaces, antici
 
   a table in which missing keys are automatically filled in. usage:
   ```lua
-  local default_table = futil.DefaultTable(function() return {} end)
+  local default_table = futil.DefaultTable(function(key) return {} end)
   default_table.foo.bar = 100 -- foo is automatically created as a table
   ```
 
