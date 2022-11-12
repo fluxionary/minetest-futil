@@ -1,4 +1,5 @@
 futil.dofile("minetest", "group")
+futil.dofile("minetest", "image")
 futil.dofile("minetest", "inventory")
 futil.dofile("minetest", "item")
 futil.dofile("minetest", "object_properties")
