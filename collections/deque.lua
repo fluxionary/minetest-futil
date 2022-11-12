@@ -23,15 +23,8 @@ function Deque:push_front(value)
 	return true
 end
 
-function Deque:push_back(value)
-	local max_size = self._m
-	if max_size and (self._z - self._a + 1) >= max_size then
-		return false
-	end
-	local z = self._z + 1
-	self._z = z
-	self[z] = value
-	return true
+function Deque:peek_front()
+	return self[self._a]
 end
 
 function Deque:pop_front()
@@ -43,6 +36,21 @@ function Deque:pop_front()
 	self[a] = nil
 	self._a = a + 1
 	return value
+end
+
+function Deque:push_back(value)
+	local max_size = self._m
+	if max_size and (self._z - self._a + 1) >= max_size then
+		return false
+	end
+	local z = self._z + 1
+	self._z = z
+	self[z] = value
+	return true
+end
+
+function Deque:peek_back()
+	return self[self._z]
 end
 
 function Deque:pop_back()
