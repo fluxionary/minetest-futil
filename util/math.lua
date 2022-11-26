@@ -40,3 +40,21 @@ function futil.math.is_u16(i)
         in_bounds(0, i, 0xFFFF)
     )
 end
+
+function futil.math.sum(t, initial)
+	local sum
+	local start
+	if initial then
+		sum = initial
+		start = 1
+	else
+		sum = t[1]
+		start = 2
+	end
+
+	for i = start, #t do
+		sum = sum + t[i]
+	end
+
+	return sum
+end
