@@ -6,7 +6,7 @@ function futil.class1(super)
 				obj:_init(...)
 			end
 			return obj
-		end
+		end,
 	}
 
 	if super then
@@ -29,10 +29,10 @@ function futil.class(...)
 				obj:_init(...)
 			end
 			return obj
-		end
+		end,
 	}
 
-	local parents = {...}
+	local parents = { ... }
 
 	if #parents > 0 then
 		meta.__index = function(t, key)

@@ -26,19 +26,11 @@ end
 local is_integer = futil.math.is_integer
 
 function futil.math.is_u8(i)
-    return (
-        type(i) == "number" and
-        is_integer(i) and
-        in_bounds(0, i, 0xFF)
-    )
+	return (type(i) == "number" and is_integer(i) and in_bounds(0, i, 0xFF))
 end
 
 function futil.math.is_u16(i)
-    return (
-        type(i) == "number" and
-        is_integer(i) and
-        in_bounds(0, i, 0xFFFF)
-    )
+	return (type(i) == "number" and is_integer(i) and in_bounds(0, i, 0xFFFF))
 end
 
 function futil.math.sum(t, initial)

@@ -9,7 +9,6 @@ local function equals(a, b)
 
 	if t ~= "table" then
 		return a == b
-
 	elseif a == b then
 		return true
 	end

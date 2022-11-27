@@ -37,7 +37,7 @@ end
 
 function futil.get_block_bounds(blockpos)
 	return v_new(blockpos.x * 16, blockpos.y * 16, blockpos.z * 16),
-	v_new(blockpos.x * 16 + 15, blockpos.y * 16 + 15, blockpos.z * 16 + 15)
+		v_new(blockpos.x * 16 + 15, blockpos.y * 16 + 15, blockpos.z * 16 + 15)
 end
 
 function futil.formspec_pos(pos)
@@ -76,11 +76,7 @@ end
 
 function futil.is_pos_in_bounds(minp, pos, maxp)
 	minp, maxp = v_sort(minp, maxp)
-	return (
-		in_bounds(minp.x, pos.x, maxp.x) and
-			in_bounds(minp.y, pos.y, maxp.y) and
-			in_bounds(minp.z, pos.z, maxp.z)
-	)
+	return (in_bounds(minp.x, pos.x, maxp.x) and in_bounds(minp.y, pos.y, maxp.y) and in_bounds(minp.z, pos.z, maxp.z))
 end
 
 function futil.get_world_bounds()
@@ -130,7 +126,7 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 				local z_min = m_max(pos1.z, z)
 				local z_max = m_min(pos2.z, z + chunk_span)
 
-				table.insert(chunks, {v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max)})
+				table.insert(chunks, { v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max) })
 			end
 		end
 	end

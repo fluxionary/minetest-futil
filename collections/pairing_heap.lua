@@ -13,14 +13,11 @@ end
 local function meld(node1, node2)
 	if node1 == nil or node1.value == nil then
 		return node2
-
 	elseif node2 == nil or node2.value == nil then
 		return node1
-
 	elseif node1.priority > node2.priority then
 		add_child(node1, node2)
 		return node1
-
 	else
 		add_child(node2, node1)
 		return node2
@@ -42,7 +39,6 @@ local function merge_pairs(node)
 
 	if siblingsibling then
 		return meld(node, merge_pairs(siblingsibling))
-
 	else
 		return node
 	end
@@ -53,7 +49,6 @@ local function cut(node)
 
 	if parent.child == node then
 		parent.child = node.sibling
-
 	else
 		parent = parent.child
 		local sibling = parent.sibling
@@ -74,7 +69,6 @@ local function need_to_move(node, new_priority)
 		-- priority increase, make sure we don't dominate our parent
 		local parent = node.parent
 		return (parent and new_priority > parent.priority)
-
 	elseif cur_priority > new_priority then
 		-- priority decrease, make sure our children don't dominate us
 		local child = node.child
@@ -85,7 +79,6 @@ local function need_to_move(node, new_priority)
 			child = child.sibling
 		end
 		return false
-
 	else
 		return false
 	end
@@ -149,13 +142,11 @@ function PairingHeap:set_value(value, priority)
 		if need_to then
 			cut(cur_node)
 			self._max_node = meld(cur_node, self._max_node)
-
 		else
 			cur_node.priority = priority
 		end
-
 	else
-		local node = {value = value, priority = priority}
+		local node = { value = value, priority = priority }
 		self._nodes_by_value[value] = node
 		self._max_node = meld(self._max_node, node)
 		self._size = self._size + 1

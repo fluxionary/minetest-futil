@@ -17,3 +17,9 @@ repos:
         entry: luacheck
         pass_filenames: false
         args: [-q,.]
+      - id: stylua
+        name: stylua
+        language: system
+        entry: stylua
+        pass_filenames: true
+        types: [ file, lua ]

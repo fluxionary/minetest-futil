@@ -9,28 +9,28 @@ function futil.file_exists(path)
 end
 
 function futil.load_file(filename)
-    local file = io.open(filename, "r")
+	local file = io.open(filename, "r")
 
-    if not file then
-        return
-    end
+	if not file then
+		return
+	end
 
-    local contents = file:read("*a")
+	local contents = file:read("*a")
 
 	file:close()
 
-    return contents
+	return contents
 end
 
 function futil.write_file(filename, contents)
-    local file = io.open(filename, "w")
+	local file = io.open(filename, "w")
 
-    if not file then
-        return false
-    end
+	if not file then
+		return false
+	end
 
-    file:write(contents)
-    file:close()
+	file:write(contents)
+	file:close()
 
-    return true
+	return true
 end

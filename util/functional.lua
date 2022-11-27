@@ -12,7 +12,7 @@ function functional.identity(x)
 end
 
 function functional.izip(...)
-	local is = {...}
+	local is = { ... }
 	if #is == 0 then
 		return functional.noop
 	end
@@ -23,7 +23,6 @@ function functional.izip(...)
 			local v = i()
 			if v ~= nil then
 				t_insert(t, v)
-
 			else
 				return
 			end
@@ -35,7 +34,7 @@ end
 
 function functional.zip(...)
 	local is = {}
-	for t in t_iterate({...}) do
+	for t in t_iterate({ ... }) do
 		t_insert(is, t_iterate(t))
 	end
 	return functional.izip(unpack(is))
@@ -81,7 +80,7 @@ function functional.reduce(func, t, initial)
 end
 
 function functional.partial(func, ...)
-	local args = {...}
+	local args = { ... }
 	return function(...)
 		return func(unpack(args), ...)
 	end
@@ -113,7 +112,6 @@ function futil.iall(i)
 		local v = i()
 		if v == false then
 			return false
-
 		elseif v == nil then
 			return true
 		end
@@ -135,7 +133,6 @@ function futil.iany(i)
 		local v = i()
 		if v == nil then
 			return false
-
 		elseif v then
 			return true
 		end

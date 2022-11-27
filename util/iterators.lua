@@ -25,7 +25,6 @@ function iterators.range(...)
 			a = a + c
 			return to_return
 		end
-
 	else
 		return function()
 			if a < b then
@@ -47,7 +46,6 @@ function iterators.repeat_(value, times)
 				return value
 			end
 		end
-
 	else
 		return function()
 			return value
@@ -56,7 +54,7 @@ function iterators.repeat_(value, times)
 end
 
 function iterators.chain(...)
-	local arg = {...}
+	local arg = { ... }
 	local i = 1
 
 	return function()

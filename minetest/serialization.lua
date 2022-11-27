@@ -3,17 +3,14 @@ local pairs_by_key = futil.table.pairs_by_key
 function futil.serialize(x)
 	if type(x) == "number" or type(x) == "boolean" or type(x) == "nil" then
 		return tostring(x)
-
 	elseif type(x) == "string" then
 		return ("%q"):format(x)
-
 	elseif type(x) == "table" then
 		local parts = {}
 		for k, v in pairs_by_key(x) do
 			table.insert(parts, ("[%s] = %s"):format(futil.serialize(k), futil.serialize(v)))
 		end
 		return ("{%s}"):format(table.concat(parts, ", "))
-
 	else
 		error(("can't serialize type %s"):format(type(x)))
 	end
@@ -84,7 +81,7 @@ end
 function futil.deserialize_node_meta(serialized_node_meta, pos)
 	local meta = minetest.get_meta(pos)
 	local x = futil.deserialize(serialized_node_meta)
-	meta:from_table({fields = x.fields})
+	meta:from_table({ fields = x.fields })
 	local inv = meta:get_inventory()
 	futil.deserialize_inv(x.inventory, inv)
 end

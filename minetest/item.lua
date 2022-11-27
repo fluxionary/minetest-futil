@@ -24,7 +24,6 @@ if ItemStack().equals then
 
 		return item1 == item2
 	end
-
 else
 	local equals = futil.equals
 
@@ -47,13 +46,10 @@ function futil.get_primary_drop(stack)
 
 	if drop == nil then
 		return name
-
 	elseif drop == "" then
 		return nil
-
 	elseif type(drop) == "string" then
 		return drop
-
 	elseif type(drop) == "table" then
 		local most_common_item
 		local rarity = tonumber("inf")
@@ -68,7 +64,6 @@ function futil.get_primary_drop(stack)
 		end
 
 		return most_common_item
-
 	else
 		error(f("invalid drop of %s? %q", dump(name, drop)))
 	end

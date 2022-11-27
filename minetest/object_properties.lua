@@ -13,13 +13,10 @@ local is_table = futil.is_table
 local function valid_box(value)
 	if value == nil then
 		return true
-
 	elseif not is_table(value) then
 		return false
-
 	elseif #value ~= 6 then
 		return false
-
 	else
 		return iall(map(is_number, value))
 	end
@@ -47,7 +44,6 @@ local function valid_color_spec(value)
 	if t == "string" then
 		-- TODO: we could check for valid values, but that's ... tedious
 		return true
-
 	elseif t == "table" then
 		local is_number_ = is_number
 		local is_integer_ = is_integer
@@ -58,12 +54,16 @@ local function valid_color_spec(value)
 		local a = value.a
 
 		return (
-			is_number_(x) and in_bounds_(0, x, 255) and is_integer_(x) and
-				is_number_(y) and in_bounds_(0, y, 255) and is_integer_(y) and
-				is_number_(z) and in_bounds_(0, z, 255) and is_integer_(z) and (
-				a == nil or
-					(is_number_(a) and in_bounds_(0, a, 255) and is_integer_(a))
-			)
+			is_number_(x)
+			and in_bounds_(0, x, 255)
+			and is_integer_(x)
+			and is_number_(y)
+			and in_bounds_(0, y, 255)
+			and is_integer_(y)
+			and is_number_(z)
+			and in_bounds_(0, z, 255)
+			and is_integer_(z)
+			and (a == nil or (is_number_(a) and in_bounds_(0, a, 255) and is_integer_(a)))
 		)
 	end
 
@@ -150,11 +150,8 @@ function futil.is_valid_property_value(key, value)
 
 	if type(kind) == "string" then
 		return type(value) == kind
-
-	elseif
-	type(kind) == "function" then
+	elseif type(kind) == "function" then
 		return kind(value)
-
 	else
 		error(f("coding error in futil for key %q", key))
 	end

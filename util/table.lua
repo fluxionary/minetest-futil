@@ -9,7 +9,7 @@ end
 function futil.table.pairs_by_value(t, sort_function)
 	local s = {}
 	for k, v in pairs(t) do
-		table.insert(s, {k, v})
+		table.insert(s, { k, v })
 	end
 
 	if sort_function then
@@ -37,7 +37,7 @@ end
 function futil.table.pairs_by_key(t, sort_function)
 	local s = {}
 	for k, v in pairs(t) do
-		table.insert(s, {k, v})
+		table.insert(s, { k, v })
 	end
 
 	if sort_function then
@@ -101,22 +101,22 @@ function futil.table.iterate(t)
 end
 
 function futil.table.reversed(t)
-    local len = #t
-    local reversed = {}
+	local len = #t
+	local reversed = {}
 
-    for i = len,1,-1 do
-        reversed[len - i + 1] = t[i]
-    end
+	for i = len, 1, -1 do
+		reversed[len - i + 1] = t[i]
+	end
 
-    return reversed
+	return reversed
 end
 
 function futil.table.contains(t, value)
-    for _, v in ipairs(t) do
-        if v == value then
+	for _, v in ipairs(t) do
+		if v == value then
 			return true
 		end
-    end
+	end
 
-    return false
+	return false
 end

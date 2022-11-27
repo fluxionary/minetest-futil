@@ -10,10 +10,10 @@ end
 
 function futil.list_multiple(iterator)
 	local t = {}
-	local v = {iterator()}
+	local v = { iterator() }
 	while #v > 0 do
 		t[#t + 1] = v
-		v = {iterator()}
+		v = { iterator() }
 	end
 	return t
 end

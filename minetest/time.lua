@@ -6,6 +6,4 @@ function futil.wait(us)
 	end
 end
 
-function futil.format_utc(timestamp)
-
-end
+function futil.format_utc(timestamp) end

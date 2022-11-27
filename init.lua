@@ -5,7 +5,7 @@ local S = minetest.get_translator(modname)
 futil = {
 	author = "fluxionary",
 	license = "AGPL_v3",
-	version = os.time({year = 2022, month = 11, day = 22}),
+	version = os.time({ year = 2022, month = 11, day = 22 }),
 	fork = "fluxionary",
 
 	modname = modname,
@@ -13,15 +13,14 @@ futil = {
 	mod_storage = minetest.get_mod_storage(),
 	S = S,
 
-	has = {
-	},
+	has = {},
 
 	log = function(level, messagefmt, ...)
 		return minetest.log(level, ("[%s] %s"):format(modname, messagefmt:format(...)))
 	end,
 
 	dofile = function(...)
-		return dofile(table.concat({modpath, ...}, DIR_DELIM) .. ".lua")
+		return dofile(table.concat({ modpath, ... }, DIR_DELIM) .. ".lua")
 	end,
 }
 
