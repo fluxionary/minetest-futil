@@ -1,26 +1,30 @@
+local f = string.format
+
+local deserialize = minetest.deserialize
+
 local pairs_by_key = futil.table.pairs_by_key
 
 function futil.serialize(x)
 	if type(x) == "number" or type(x) == "boolean" or type(x) == "nil" then
 		return tostring(x)
 	elseif type(x) == "string" then
-		return ("%q"):format(x)
+		return f("%q", x)
 	elseif type(x) == "table" then
 		local parts = {}
 		for k, v in pairs_by_key(x) do
-			table.insert(parts, ("[%s] = %s"):format(futil.serialize(k), futil.serialize(v)))
+			table.insert(parts, f("[%s] = %s", futil.serialize(k), futil.serialize(v)))
 		end
-		return ("{%s}"):format(table.concat(parts, ", "))
+		return f("{%s}", table.concat(parts, ", "))
 	else
-		error(("can't serialize type %s"):format(type(x)))
+		error(f("can't serialize type %s", x))
 	end
 end
 
 function futil.deserialize(data)
-	local f = loadstring(("return %s"):format(data))
+	local func = deserialize(f("return %s", data))
 
-	if f then
-		return f()
+	if func then
+		return func()
 	end
 end
 
@@ -29,7 +33,7 @@ function futil.serialize_invlist(inv, listname)
 	local list = inv:get_list(listname)
 
 	if not list then
-		error(("couldn't find list %s of %s"):format(listname, minetest.write_json(inv:get_location())))
+		error(f("couldn't find list %s of %s", listname, minetest.write_json(inv:get_location())))
 	end
 
 	for _, stack in ipairs(list) do

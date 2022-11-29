@@ -1,3 +1,6 @@
+local private_state = ...
+local mod_storage = private_state.mod_storage
+
 function futil.memoize1(func)
 	local memo = {}
 	return function(arg)
@@ -14,8 +17,6 @@ function futil.memoize1(func)
 		return rv
 	end
 end
-
-local mod_storage = futil.mod_storage
 
 function futil.memoize1ms(key, func)
 	key = ("%%s:%s:memoize"):format(key)
