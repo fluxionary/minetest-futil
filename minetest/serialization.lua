@@ -21,11 +21,7 @@ function futil.serialize(x)
 end
 
 function futil.deserialize(data)
-	local func = deserialize(f("return %s", data))
-
-	if func then
-		return func()
-	end
+	return deserialize(f("return %s", data))
 end
 
 function futil.serialize_invlist(inv, listname)
