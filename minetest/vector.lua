@@ -32,12 +32,16 @@ function futil.get_bounds(pos, radius)
 end
 
 function futil.get_blockpos(pos)
-	return v_new(m_floor(pos.x / 16), m_floor(pos.y / 16), m_floor(pos.z / 16))
+	return v_new(m_floor(pos.x / mapblock_size), m_floor(pos.y / mapblock_size), m_floor(pos.z / mapblock_size))
 end
 
 function futil.get_block_bounds(blockpos)
-	return v_new(blockpos.x * 16, blockpos.y * 16, blockpos.z * 16),
-		v_new(blockpos.x * 16 + 15, blockpos.y * 16 + 15, blockpos.z * 16 + 15)
+	return v_new(blockpos.x * mapblock_size, blockpos.y * mapblock_size, blockpos.z * mapblock_size),
+		v_new(
+			blockpos.x * mapblock_size + (mapblock_size - 1),
+			blockpos.y * mapblock_size + (mapblock_size - 1),
+			blockpos.z * mapblock_size + (mapblock_size - 1)
+		)
 end
 
 function futil.formspec_pos(pos)
