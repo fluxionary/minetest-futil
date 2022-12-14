@@ -20,7 +20,7 @@ function Deque:push_front(value)
 	local a = self._a - 1
 	self._a = a
 	self[a] = value
-	return true
+	return true, a
 end
 
 function Deque:peek_front()
@@ -46,7 +46,7 @@ function Deque:push_back(value)
 	local z = self._z + 1
 	self._z = z
 	self[z] = value
-	return true
+	return true, z
 end
 
 function Deque:peek_back()
@@ -62,6 +62,17 @@ function Deque:pop_back()
 	self[z] = nil
 	self._z = z + 1
 	return value
+end
+
+-- this iterator is kinda wonky, and the behavior may be changed in the future.
+-- unexpected behavior may result from modifying a deque *while* iterating it.
+-- note that you *cannot* iterate the deque directly using `pairs()` because of e.g. "_a" and "_z"
+function Deque:iterate()
+	local i = self._a - 1
+	return function()
+		i = i + 1
+		return self[i]
+	end
 end
 
 function Deque:clear()
