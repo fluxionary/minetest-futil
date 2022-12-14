@@ -1,43 +1,55 @@
 function futil.class1(super)
-	local meta = {
-		__call = function(class, ...)
-			local obj = setmetatable({}, class)
-			if obj._init then
-				obj:_init(...)
+	local class = {}
+	class.__index = class -- this becomes the index "metamethod" of objects
+
+	setmetatable(class, {
+		__index = super and super.__index or super,
+		__call = function(this_class, ...)
+			local obj = setmetatable({}, this_class)
+			local init = obj._init
+			if init then
+				init(obj, ...)
 			end
 			return obj
 		end,
-	}
-
-	if super then
-		meta.__index = super
-	end
-
-	local class = {}
-	class.__index = class
-
-	setmetatable(class, meta)
+	})
 
 	return class
 end
 
 function futil.class(...)
+	local class = {}
+	class.__index = class
+
 	local meta = {
-		__call = function(class, ...)
-			local obj = setmetatable({}, class)
-			if obj._init then
-				obj:_init(...)
+		__call = function(this_class, ...)
+			local obj = setmetatable({}, this_class)
+			local init = obj._init
+			if init then
+				init(obj, ...)
 			end
 			return obj
 		end,
 	}
 
 	local parents = { ... }
+	class._parents = parents
 
 	if #parents > 0 then
-		meta.__index = function(t, key)
+		function meta:__index(key)
 			for i = #parents, 1, -1 do
-				local v = parents[i][key]
+				local parent = parents[i]
+				local index = parent.__index
+				local v
+				if index then
+					if type(index) == "function" then
+						v = index(self, key)
+					else
+						v = index[key]
+					end
+				else
+					v = parent[key]
+				end
 				if v then
 					return v
 				end
@@ -45,9 +57,6 @@ function futil.class(...)
 		end
 	end
 
-	local class = {}
-	class._parents = parents
-	class.__index = class
 	setmetatable(class, meta)
 
 	function class:is_a(class2)
