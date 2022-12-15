@@ -6,12 +6,23 @@ end
 
 function FakeInventory:is_empty(listname)
 	local list = self._lists[listname]
-	return not list or #list == 0
+	if not list then
+		return true
+	end
+	for _, stack in ipairs(list) do
+		if not stack:is_empty() then
+			return false
+		end
+	end
+	return true
 end
 
 function FakeInventory:get_size(listname)
 	local list = self._lists[listname]
-	return list and #list or 0
+	if not list then
+		return 0
+	end
+	return #list
 end
 
 function FakeInventory:set_size(listname, size)
@@ -22,16 +33,25 @@ function FakeInventory:set_size(listname, size)
 
 	local list = self._lists[listname] or {}
 
-	if #list < size then
-		for _ = #list + 1, size do
-			table.insert(list, ItemStack(""))
-		end
-	elseif #list > size then
-		for _ = #list, size + 1, -1 do
-			table.remove(list)
-		end
+	while #list < size do
+		list[#list + 1] = ItemStack()
 	end
 
+	for i = size + 1, #list do
+		list[i] = nil
+	end
+
+	self._lists[listname] = list
+end
+
+function FakeInventory:get_width(listname)
+	local list = self._lists[listname] or {}
+	return list.width or 0
+end
+
+function FakeInventory:set_width(listname, width)
+	local list = self._lists[listname] or {}
+	list.width = width
 	self._lists[listname] = list
 end
 
