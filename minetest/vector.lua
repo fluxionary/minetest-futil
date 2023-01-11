@@ -17,7 +17,6 @@ local map_min_i = mapgen_limit_min + (mapblock_size * chunksize)
 local map_max_i = mapgen_limit_max - (mapblock_size * chunksize)
 
 local v_add = vector.add
-local v_copy = vector.copy
 local v_new = vector.new
 local v_sort = vector.sort
 local v_sub = vector.subtract
@@ -50,26 +49,35 @@ end
 
 function futil.iterate_area(minp, maxp)
 	minp, maxp = v_sort(minp, maxp)
-	local cur = table.copy(minp)
-	cur.x = cur.x - 1
+	local min_x = minp.x
+	local min_z = minp.z
+
+	local x = min_x - 1
+	local y = minp.y
+	local z = min_z
+
+	local max_x = maxp.x
+	local max_y = maxp.y
+	local max_z = maxp.z
+
 	return function()
-		if cur.y > maxp.y then
+		if y > max_y then
 			return
 		end
 
-		cur.x = cur.x + 1
-		if cur.x > maxp.x then
-			cur.x = minp.x
-			cur.z = cur.z + 1
+		x = x + 1
+		if x > max_x then
+			x = min_x
+			z = z + 1
 		end
 
-		if cur.z > maxp.z then
-			cur.z = minp.z
-			cur.y = cur.y + 1
+		if z > max_z then
+			z = min_z
+			y = y + 1
 		end
 
-		if cur.y <= maxp.y then
-			return v_copy(cur)
+		if y <= max_y then
+			return v_new(x, y, z)
 		end
 	end
 end
