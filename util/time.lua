@@ -20,3 +20,7 @@ function futil.seconds_to_interval(time)
 		return ("%d seconds"):format(s)
 	end
 end
+
+function futil.format_utc(timestamp)
+	return os.date("!%Y-%m-%dT%TZ", timestamp)
+end

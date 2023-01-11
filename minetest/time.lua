@@ -5,5 +5,3 @@ function futil.wait(us)
 		-- the NOTHING function does nothing.
 	end
 end
-
-function futil.format_utc(timestamp) end
