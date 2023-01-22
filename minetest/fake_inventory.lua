@@ -4,6 +4,16 @@ function FakeInventory:_init()
 	self._lists = {}
 end
 
+function FakeInventory.create_copy(inv)
+	local fake_inv = FakeInventory()
+	for listname, contents in pairs(inv:get_lists()) do
+		fake_inv:set_size(listname, inv:get_size(listname))
+		fake_inv:set_width(listname, inv:get_width(listname))
+		fake_inv:set_list(listname, contents)
+	end
+	return fake_inv
+end
+
 function FakeInventory:is_empty(listname)
 	local list = self._lists[listname]
 	if not list then
