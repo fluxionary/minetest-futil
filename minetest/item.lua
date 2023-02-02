@@ -4,16 +4,46 @@ function futil.resolve_item(item)
 	local item_stack = ItemStack(item)
 	local name = item_stack:get_name()
 
+	local seen = { [name] = true }
+
 	local alias = minetest.registered_aliases[name]
 	while alias do
 		name = alias
+		seen[name] = true
 		alias = minetest.registered_aliases[name]
+		if seen[alias] then
+			error(f("alias cycle on %s", name))
+		end
 	end
 
 	if minetest.registered_items[name] then
 		item_stack:set_name(name)
 		return item_stack:to_string()
 	end
+end
+
+function futil.resolve_itemstack(item)
+	local item_stack = ItemStack(item)
+	local name = item_stack:get_name()
+
+	local seen = { [name] = true }
+
+	local alias = minetest.registered_aliases[name]
+	while alias do
+		name = alias
+		seen[name] = true
+		alias = minetest.registered_aliases[name]
+		if seen[alias] then
+			error(f("alias cycle on %s", name))
+		end
+	end
+
+	if minetest.registered_items[name] then
+		item_stack:set_name(name)
+		return item_stack
+	end
+
+	return ItemStack()
 end
 
 if ItemStack().equals then
