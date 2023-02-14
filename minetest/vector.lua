@@ -1,6 +1,11 @@
+local m_acos = math.acos
+local m_cos = math.cos
+local m_floor = math.floor
 local m_min = math.min
 local m_max = math.max
-local m_floor = math.floor
+local m_pi = math.pi
+local m_random = math.random
+local m_sin = math.sin
 
 local in_bounds = futil.math.in_bounds
 local bound = futil.math.bound
@@ -144,4 +149,28 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 	end
 
 	return chunks
+end
+
+function futil.random_unit_vector()
+	local u = m_random()
+	local v = m_random()
+	local lambda = m_acos(2 * u - 1) - (m_pi / 2)
+	local phi = 2 * m_pi * v
+	return v_new(m_cos(lambda) * m_cos(phi), m_cos(lambda) * m_sin(phi), m_sin(lambda))
+end
+
+function futil.is_indoors(pos, distance, trials, hits_needed)
+	distance = distance or 20
+	trials = trials or 11
+	hits_needed = hits_needed or 9
+	local num_hits = 0
+	for _ = 1, trials do
+		local ruv = futil.random_unit_vector()
+		local target = pos + (distance * ruv)
+		if Raycast(pos, target, false, false)() then
+			num_hits = num_hits + 1
+			break
+		end
+	end
+	return num_hits >= hits_needed
 end

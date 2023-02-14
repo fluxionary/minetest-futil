@@ -175,6 +175,7 @@ stds.minetest = {
 				rand_normal_dist = {},
 			},
 		},
+		"Raycast",
 		SecureRandom = {
 			fields = {
 				next_bytes = {},
