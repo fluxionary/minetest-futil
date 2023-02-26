@@ -1,5 +1,13 @@
 local FakeInventory = futil.class1()
 
+local function copy_list(list)
+	local copy = {}
+	for i = 1, #list do
+		copy[i] = ItemStack(list[i])
+	end
+	return copy
+end
+
 function FakeInventory:_init()
 	self._lists = {}
 end
@@ -86,11 +94,7 @@ function FakeInventory:get_list(listname)
 	if not list then
 		return
 	end
-	local stacks = {}
-	for _, stack in ipairs(list) do
-		table.insert(stacks, ItemStack(stack))
-	end
-	return stacks
+	return copy_list(list)
 end
 
 function FakeInventory:set_list(listname, list)
@@ -106,8 +110,8 @@ end
 
 function FakeInventory:get_lists()
 	local lists = {}
-	for listname in pairs(self._lists) do
-		lists[listname] = self:get_list(listname)
+	for listname, list in pairs(self._lists) do
+		lists[listname] = copy_list(list)
 	end
 	return lists
 end
@@ -144,7 +148,7 @@ function FakeInventory:room_for_item(listname, stack)
 	end
 
 	stack = ItemStack(stack)
-	local copy = table.copy(list)
+	local copy = copy_list(list)
 	for _, our_stack in ipairs(copy) do
 		stack = our_stack:add_item(stack)
 		if stack:is_empty() then
