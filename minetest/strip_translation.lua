@@ -21,6 +21,10 @@ local function tokenize(s)
 			if n == "(" then
 				local m = s:sub(i + 2, i + 2)
 				local k = s:find(")", i + 3, true)
+				if not k then
+					futil.log("error", "strip_translation: couldn't tokenize %q", s)
+					return {}
+				end
 				if m == "T" then
 					table.insert(tokens, {
 						type = "translation",
@@ -37,7 +41,8 @@ local function tokenize(s)
 						color = s:sub(i + 4, k - 1),
 					})
 				else
-					error(("couldn't parse %s"):format(s))
+					futil.log("error", "strip_translation: couldn't tokenize %q", s)
+					return {}
 				end
 				i = k + 1
 				j = k + 1
@@ -54,7 +59,8 @@ local function tokenize(s)
 				i = j + 2
 				j = j + 2
 			else
-				error(("couldn't parse %s"):format(s))
+				futil.log("error", "strip_translation: couldn't tokenize %q", s)
+				return {}
 			end
 		else
 			j = j + 1
@@ -80,6 +86,9 @@ local function parse(tokens, i, parsed)
 			}
 			i = i + 1
 			contents, i = parse(tokens, i, contents)
+			if i == -1 then
+				return "", -1
+			end
 			table.insert(parsed, contents)
 		elseif token.type == "start" then
 			local contents = {
@@ -87,18 +96,22 @@ local function parse(tokens, i, parsed)
 			}
 			i = i + 1
 			contents, i = parse(tokens, i, contents)
+			if i == -1 then
+				return "", -1
+			end
 			table.insert(parsed, contents)
 		elseif token.type == "stop" then
 			i = i + 1
 			return parsed, i
 		else
-			error(("couldn't parse %s"):format(dump(token)))
+			futil.log("error", "strip_translation: couldn't parse %s", dump(token):gsub("%s+", ""))
+			return "", -1
 		end
 	end
 	return parsed, i
 end
 
-local function unparse_and_strip(parsed, parts)
+local function unparse_and_strip_translation(parsed, parts)
 	parts = parts or {}
 	for _, part in ipairs(parsed) do
 		if type(part) == "string" then
@@ -109,13 +122,9 @@ local function unparse_and_strip(parsed, parts)
 			elseif part.type == "color" then
 				table.insert(parts, ("\27(c@%s)"):format(part.color))
 			elseif part.domain then
-				--table.insert(parts, ("\27(T@%s)"):format(part.domain))
-				unparse_and_strip(part, parts)
-				--table.insert(parts, "\27E")
+				unparse_and_strip_translation(part, parts)
 			else
-				--table.insert(parts, "\27F")
-				unparse_and_strip(part, parts)
-				--table.insert(parts, "\27E")
+				unparse_and_strip_translation(part, parts)
 			end
 		end
 	end
@@ -146,7 +155,8 @@ local function erase_after_newline(parsed, erasing)
 			stuff.domain = piece.domain
 			table.insert(single_line_parsed, stuff)
 		else
-			error(("unknown type %s"):format(piece.type))
+			futil.log("error", "strip_translation: couldn't erase_after_newline %s", dump(parsed):gsub("%s+", ""))
+			return {}
 		end
 	end
 
@@ -181,7 +191,7 @@ end
 function futil.strip_translation(msg)
 	local tokens = tokenize(msg)
 	local parsed = parse(tokens)
-	return table.concat(unparse_and_strip(parsed), "")
+	return table.concat(unparse_and_strip_translation(parsed), "")
 end
 
 function futil.get_safe_short_description(item)
