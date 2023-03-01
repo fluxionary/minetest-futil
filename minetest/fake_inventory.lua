@@ -22,6 +22,18 @@ function FakeInventory.create_copy(inv)
 	return fake_inv
 end
 
+function FakeInventory.room_for_all(inv, listname, items)
+	local fake_inv = FakeInventory.create_copy(inv)
+	for i = 1, #items do
+		local item = items[i]
+		local remainder = fake_inv:add_item(listname, item)
+		if not remainder:is_empty() then
+			return false
+		end
+	end
+	return true
+end
+
 function FakeInventory:is_empty(listname)
 	local list = self._lists[listname]
 	if not list then
