@@ -107,7 +107,7 @@ end
 
 function PairingHeap:remove(value)
 	self:set_priority(value, inf)
-	return self:delete_max()
+	return self:pop()
 end
 
 function PairingHeap:pop()
@@ -130,11 +130,11 @@ function PairingHeap:pop()
 	return value
 end
 
-function PairingHeap:get_value(value)
+function PairingHeap:get_priority(value)
 	return self._nodes_by_value[value].priority
 end
 
-function PairingHeap:set_value(value, priority)
+function PairingHeap:set_priority(value, priority)
 	local cur_node = self._nodes_by_value[value]
 	if cur_node then
 		local need_to = need_to_move(cur_node, priority)
