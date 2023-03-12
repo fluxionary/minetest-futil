@@ -5,7 +5,7 @@ local max = math.max
 local min = math.min
 
 function futil.math.idiv(a, b)
-	local rem = (a % b)
+	local rem = a % b
 	return (a - rem) / b, rem
 end
 
