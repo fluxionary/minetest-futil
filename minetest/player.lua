@@ -150,17 +150,17 @@ function futil.is_on_ground(player)
 	return false
 end
 
-local elapsed = 0
-minetest.register_globalstep(function(dtime)
-	elapsed = elapsed + dtime
-	if elapsed < 1 then
-		return
-	end
-	elapsed = 0
-	for _, player in ipairs(minetest.get_connected_players()) do
-		minetest.chat_send_player(
-			player:get_player_name(),
-			string.format("is_on_ground = %s", futil.is_on_ground(player))
-		)
-	end
-end)
+--local elapsed = 0
+--minetest.register_globalstep(function(dtime)
+--	elapsed = elapsed + dtime
+--	if elapsed < 1 then
+--		return
+--	end
+--	elapsed = 0
+--	for _, player in ipairs(minetest.get_connected_players()) do
+--		minetest.chat_send_player(
+--			player:get_player_name(),
+--			string.format("is_on_ground = %s", futil.is_on_ground(player))
+--		)
+--	end
+--end)
