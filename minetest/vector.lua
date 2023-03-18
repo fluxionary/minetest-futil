@@ -174,3 +174,20 @@ function futil.is_indoors(pos, distance, trials, hits_needed)
 	end
 	return num_hits >= hits_needed
 end
+
+function futil.can_see_sky(pos, distance, trials, hits_needed)
+	distance = distance or 20
+	trials = trials or 11
+	hits_needed = hits_needed or 5
+	local num_hits = 0
+	for _ = 1, trials do
+		local ruv = futil.random_unit_vector()
+		ruv.y = math.abs(ruv.y) -- look up, not at the ground
+		local target = pos + (distance * ruv)
+		if Raycast(pos, target, false, false)() then
+			num_hits = num_hits + 1
+			break
+		end
+	end
+	return num_hits >= hits_needed
+end
