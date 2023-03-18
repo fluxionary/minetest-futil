@@ -23,10 +23,8 @@ function futil.remove_groups(itemstring, ...)
 end
 
 function futil.get_items_with_group(group)
-	local items_by_group = futil.items_by_group
-
-	if items_by_group then
-		return items_by_group[group] or {}
+	if futil.items_by_group then
+		return futil.items_by_group[group] or {}
 	end
 
 	local items = {}
@@ -38,6 +36,10 @@ function futil.get_items_with_group(group)
 	end
 
 	return items
+end
+
+function futil.get_item_with_group(group)
+	return futil.get_items_with_group(group)[1]
 end
 
 function futil.generate_items_by_group()
