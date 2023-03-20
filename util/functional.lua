@@ -107,7 +107,7 @@ function functional.filter(pred, t)
 	return functional.ifilter(pred, t_iterate(t))
 end
 
-function futil.iall(i)
+function functional.iall(i)
 	while true do
 		local v = i()
 		if v == false then
@@ -118,7 +118,7 @@ function futil.iall(i)
 	end
 end
 
-function futil.all(t)
+function functional.all(t)
 	for i = 1, #t do
 		if not t[i] then
 			return false
@@ -128,7 +128,7 @@ function futil.all(t)
 	return true
 end
 
-function futil.iany(i)
+function functional.iany(i)
 	while true do
 		local v = i()
 		if v == nil then
@@ -139,12 +139,13 @@ function futil.iany(i)
 	end
 end
 
-function futil.any(t)
+function functional.any(t)
 	for i = 1, #t do
 		if t[i] then
 			return true
 		end
 	end
+	return false
 end
 
 futil.functional = functional

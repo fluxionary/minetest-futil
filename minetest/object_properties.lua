@@ -1,6 +1,6 @@
 local f = string.format
 
-local iall = futil.iall
+local iall = futil.functional.iall
 local map = futil.map
 
 local in_bounds = futil.math.in_bounds
