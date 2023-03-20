@@ -50,3 +50,22 @@ function futil.math.sum(t, initial)
 
 	return sum
 end
+
+function futil.math.isum(i, initial)
+	local sum
+
+	if initial == nil then
+		sum = i()
+	else
+		sum = initial
+	end
+
+	local v = i()
+
+	while v do
+		sum = sum + v
+		v = i()
+	end
+
+	return sum
+end
