@@ -133,3 +133,19 @@ function futil.table.sort_keys(t, sort_function)
 	end
 	return sorted
 end
+
+function futil.table.keys(t)
+	local keys = {}
+	for key in pairs(t) do
+		keys[#keys + 1] = key
+	end
+	return keys
+end
+
+function futil.table.values(t)
+	local values = {}
+	for _, value in pairs(t) do
+		values[#values + 1] = value
+	end
+	return values
+end
