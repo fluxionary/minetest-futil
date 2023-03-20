@@ -76,4 +76,12 @@ function iterators.count(start, step)
 	end
 end
 
+function iterators.values(t)
+	local p = pairs(t)
+	return function()
+		local _, value = p(t)
+		return value
+	end
+end
+
 futil.iterators = iterators
