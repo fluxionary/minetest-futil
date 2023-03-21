@@ -1,5 +1,6 @@
 futil.dofile("minetest", "box")
 futil.dofile("minetest", "fake_inventory")
+futil.dofile("minetest", "globalstep")
 futil.dofile("minetest", "group")
 futil.dofile("minetest", "image")
 futil.dofile("minetest", "inventory")
