@@ -14,7 +14,7 @@ function futil.register_globalstep(def)
 					def.func(0)
 				end
 			end)
-		elseif def.catchup == "single" then
+		elseif def.catchup == "single" or def.catchup == true then
 			minetest.register_globalstep(function(dtime)
 				elapsed = elapsed + dtime
 				if elapsed < def.period then
