@@ -21,7 +21,7 @@ end
 function futil.memoize_dumpable(func)
 	local memo = {}
 	return function(...)
-		local key = dump({ ... }):gsub("%s+", "")
+		local key = dump({ ... })
 		local rv = memo[key]
 
 		if not rv then
