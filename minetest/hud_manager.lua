@@ -64,13 +64,18 @@ function Hud:update(player)
 			if hud_id then
 				player:hud_remove(hud_id)
 				self._hud_id_by_player_name[player_name] = nil
-				return
 			end
+			return
+		elseif new_hud_def[self._name_field] then
+			error("you cannot specify the value of the name field, this is generated")
 		end
 
 		if old_hud_def then
 			for k, v in pairs(new_hud_def) do
 				if old_hud_def[k] ~= v then
+					if k == "hud_elem_type" then
+						error(f("cannot change hud_elem_type (%s -> %s)", old_hud_def[k], v))
+					end
 					player:hud_change(hud_id, k, v)
 				end
 			end
