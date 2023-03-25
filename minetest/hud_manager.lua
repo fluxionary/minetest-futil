@@ -72,10 +72,7 @@ function Hud:update(player)
 
 		if old_hud_def then
 			for k, v in pairs(new_hud_def) do
-				if old_hud_def[k] ~= v then
-					if k == "hud_elem_type" then
-						error(f("cannot change hud_elem_type (%s -> %s)", old_hud_def[k], v))
-					end
+				if old_hud_def[k] ~= v and k ~= "hud_elem_type" then
 					player:hud_change(hud_id, k, v)
 				end
 			end
