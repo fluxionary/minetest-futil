@@ -13,9 +13,12 @@ local Hud = futil.class1()
 
 function Hud:_init(hud_name, def)
 	self.name = hud_name
+
 	self._name_field = def.name_field or "name"
 	self._period = def.period or 0
 	self._get_hud_def = def.get_hud_def
+	self._enabled_by_default = def.enabled_by_default
+
 	self._hud_id_by_player_name = {}
 
 	self._hud_enabled_key = f("hud_manager:%s_enabled", hud_name)
@@ -24,12 +27,17 @@ end
 
 function Hud:is_enabled(player)
 	local meta = player:get_meta()
-	return minetest.is_yes(meta:get(self._hud_enabled_key))
+	local value = meta:get(self._hud_enabled_key)
+	if value == nil then
+		return self._enabled_by_default
+	else
+		return minetest.is_yes(value)
+	end
 end
 
 function Hud:toggle_enabled(player)
 	local meta = player:get_meta()
-	local enabled = not minetest.is_yes(meta:get(self._hud_enabled_key))
+	local enabled = not self:is_enabled(player)
 	if enabled then
 		meta:set_string(self._hud_enabled_key, "y")
 	else
