@@ -2,6 +2,7 @@ function futil.register_globalstep(def)
 	if def.period then
 		local elapsed = 0
 		if def.catchup == "full" then
+			assert(def.period > 0, "full catchup will cause an infinite loop if period is 0")
 			minetest.register_globalstep(function(dtime)
 				elapsed = elapsed + dtime
 				if elapsed < def.period then

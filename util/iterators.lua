@@ -77,9 +77,10 @@ function iterators.count(start, step)
 end
 
 function iterators.values(t)
-	local p = pairs(t)
+	local k
 	return function()
-		local _, value = p(t)
+		local value
+		k, value = next(t, k)
 		return value
 	end
 end
