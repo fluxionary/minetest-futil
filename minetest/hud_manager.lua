@@ -15,7 +15,7 @@ function Hud:_init(hud_name, def)
 	self.name = hud_name
 
 	self._name_field = def.name_field or "name"
-	self._period = def.period or 0
+	self._period = def.period
 	self._get_hud_def = def.get_hud_def
 	self._enabled_by_default = def.enabled_by_default
 
