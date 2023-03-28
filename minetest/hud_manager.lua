@@ -108,13 +108,15 @@ local elapsed_by_hud_name = {}
 minetest.register_globalstep(function(dtime)
 	local players = minetest.get_connected_players()
 	for hud_name, hud in pairs(futil.defined_huds) do
-		local elapsed = (elapsed_by_hud_name[hud_name] or 0) + dtime
-		if elapsed < hud._period then
-			elapsed_by_hud_name[hud_name] = elapsed
-		else
-			elapsed_by_hud_name[hud_name] = 0
-			for i = 1, #players do
-				hud:update(players[i])
+		if hud._period then
+			local elapsed = (elapsed_by_hud_name[hud_name] or 0) + dtime
+			if elapsed < hud._period then
+				elapsed_by_hud_name[hud_name] = elapsed
+			else
+				elapsed_by_hud_name[hud_name] = 0
+				for i = 1, #players do
+					hud:update(players[i])
+				end
 			end
 		end
 	end
