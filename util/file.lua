@@ -22,6 +22,7 @@ function futil.load_file(filename)
 	return contents
 end
 
+-- minetest.safe_file_write is apparently unreliable on windows
 function futil.write_file(filename, contents)
 	local file = io.open(filename, "w")
 
