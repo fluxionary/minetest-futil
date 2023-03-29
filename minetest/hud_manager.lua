@@ -35,6 +35,15 @@ function Hud:is_enabled(player)
 	end
 end
 
+function Hud:set_enabled(player, value)
+	local meta = player:get_meta()
+	if minetest.is_yes(value) then
+		meta:set_string(self._hud_enabled_key, "y")
+	else
+		meta:set_string(self._hud_enabled_key, "")
+	end
+end
+
 function Hud:toggle_enabled(player)
 	local meta = player:get_meta()
 	local enabled = not self:is_enabled(player)

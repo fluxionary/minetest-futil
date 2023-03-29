@@ -452,7 +452,7 @@ local hud = futil.define_hud("my_hud", {
                       -- hud_elem_type. defaults to "name", which is good for most types. waypoints are an exception.
     get_hud_def = function(player) return {} end,  -- return the expected hud definition for the player.
                                                    -- if nil is returned, the hud will be removed.
-    enabled_by_default = true, -- whether the hud should be enabled by default.
+    enabled_by_default = false, -- whether the hud should be enabled by default.
 })
 
 local player = minetest.get_player_by_name("flux")
