@@ -9,10 +9,10 @@ function futil.register_globalstep(def)
 					return
 				end
 				elapsed = elapsed - def.period
-				def.func(dtime)
+				def.func(def.period)
 				while elapsed > def.period do
 					elapsed = elapsed - def.period
-					def.func(0)
+					def.func(def.period)
 				end
 			end)
 		elseif def.catchup == "single" or def.catchup == true then
@@ -22,7 +22,7 @@ function futil.register_globalstep(def)
 					return
 				end
 				elapsed = elapsed - def.period
-				def.func(dtime)
+				def.func(def.period)
 			end)
 		else
 			-- no catchup, just reset
@@ -31,8 +31,8 @@ function futil.register_globalstep(def)
 				if elapsed < def.period then
 					return
 				end
+				def.func(elapsed)
 				elapsed = 0
-				def.func(dtime)
 			end)
 		end
 	else
