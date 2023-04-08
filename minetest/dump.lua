@@ -1,6 +1,14 @@
 -- adapted from https://github.com/minetest/minetest/blob/master/builtin/common/misc_helpers.lua
 -- but tables are sorted
 
+local function sorter(a, b)
+	local ta, tb = type(a), type(b)
+	if ta ~= tb then
+		return ta < tb
+	end
+	return a < b
+end
+
 local keywords = {
 	["and"] = true,
 	["break"] = true,
@@ -80,7 +88,7 @@ function futil.dump(o, indent, nested, level)
 		ret[#ret + 1] = futil.dump(v, indent, nested, level + 1)
 		dumped_indexes[i] = true
 	end
-	for k, v in futil.table.pairs_by_key(o) do
+	for k, v in futil.table.pairs_by_key(o, sorter) do
 		if not dumped_indexes[k] then
 			if type(k) ~= "string" or not is_valid_identifier(k) then
 				k = "[" .. futil.dump(k, indent, nested, level + 1) .. "]"
