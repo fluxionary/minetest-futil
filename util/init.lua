@@ -1,6 +1,7 @@
 futil.dofile("util", "class")
 futil.dofile("util", "exception")
 futil.dofile("util", "file")
+futil.dofile("util", "http")
 futil.dofile("util", "list")
 futil.dofile("util", "math")
 futil.dofile("util", "memoization")
