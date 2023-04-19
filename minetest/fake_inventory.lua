@@ -115,7 +115,7 @@ function FakeInventory:set_list(listname, list)
 		return
 	end
 
-	for i = 1, math.min(#ourlist, #list) do
+	for i = 1, #ourlist do
 		ourlist[i] = ItemStack(list[i])
 	end
 end
