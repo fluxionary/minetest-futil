@@ -15,7 +15,7 @@ without having to re-implement the same code in multiple mods.
 
 * `futil.Deque`
 
-  a deque. supported methods:
+  a [deque](https://en.wikipedia.org/wiki/Double-ended_queue). supported methods:
   * `Deque:size()`
   * `Deque:push_front(value)`
   * `Deque:push_back(value)`
@@ -24,7 +24,7 @@ without having to re-implement the same code in multiple mods.
 
 * `futil.PairingHeap`
 
-  a pairing heap. supported methods:
+  a [pairing heap](https://en.wikipedia.org/wiki/Pairing_heap). supported methods:
   * `PairingHeap:size()`
   * `PairingHeap:peek_max()`
   * `PairingHeap:delete(value)`
@@ -412,7 +412,9 @@ without having to re-implement the same code in multiple mods.
 ### fake inventory
 this is useful for testing multiple actions on an inventory without having to worry about changing the inventory or
 reverting it. this is a better solution than a detached inventory, as actions on a detached inventory are still sent
-to clients. fake inventories support all the regular methods of a minetest inventory object, with some additions.
+to clients. fake inventories support all the regular methods of a
+[minetest inventory object](https://github.com/minetest/minetest/blob/master/doc/lua_api.md#invref),
+with some additions.
 
 * `futil.FakeInventory()`
 
@@ -420,7 +422,7 @@ to clients. fake inventories support all the regular methods of a minetest inven
 
 * `futil.FakeInventory.create_copy(inv)`
 
-  copy all the inventory lists from inv into a new fake inventory.
+  copy all the inventory lists from inv into a new fake inventory. will also create a copy of another fake inventory.
 
 * `futil.FakeInventory.room_for_all(inv, listname, items)`
 
@@ -459,7 +461,7 @@ local player = minetest.get_player_by_name("flux")
 if hud:toggle_enabled(player) then
     print("hud now enabled")
 else
-    print("hut now disabled")
+    print("hud now disabled")
 end
 
 print("hud is " .. (hud:is_enabled(player) and "enabled" or "disabled"))
