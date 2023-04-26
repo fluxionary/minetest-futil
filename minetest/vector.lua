@@ -213,3 +213,13 @@ function futil.can_see_sky(pos, distance, trials, hits_needed)
 	end
 	return num_hits >= hits_needed
 end
+
+function futil.is_valid_position(pos)
+	if type(pos) ~= "table" then
+		return false
+	elseif not (type(pos.x) == "number" and type(pos.y) == "number" and type(pos.z) == "number") then
+		return false
+	else
+		return futil.is_inside_world_bounds(vector.round(pos))
+	end
+end
