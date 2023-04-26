@@ -7,44 +7,48 @@ local m_pi = math.pi
 local m_random = math.random
 local m_sin = math.sin
 
-local in_bounds = futil.math.in_bounds
-local bound = futil.math.bound
-
-local mapblock_size = 16
-local chunksize = m_floor(tonumber(minetest.settings:get("chunksize")) or 5)
-local chunkblocks = mapblock_size * chunksize
-local max_mapgen_limit = 31007
-local mapgen_limit = m_floor(tonumber(minetest.settings:get("mapgen_limit")) or max_mapgen_limit)
-local mapgen_limit_b = m_floor(bound(0, mapgen_limit, max_mapgen_limit) / mapblock_size)
-local mapgen_limit_min = -mapgen_limit_b * mapblock_size
-local mapgen_limit_max = (mapgen_limit_b + 1) * mapblock_size - 1
-
-local map_min_i = mapgen_limit_min + chunkblocks
-local map_max_i = mapgen_limit_max - chunkblocks
-
 local v_add = vector.add
 local v_new = vector.new
 local v_sort = vector.sort
 local v_sub = vector.subtract
+
+local in_bounds = futil.math.in_bounds
+local bound = futil.math.bound
+
+local mapblock_size = 16 -- can be redefined, but effectively hard-coded
+local chunksize = m_floor(tonumber(minetest.settings:get("chunksize")) or 5) -- # of mapblocks in a chunk (1 dim)
+local chunksize_nodes = mapblock_size * chunksize -- # of nodes in a chunk (1 dim)
+local max_mapgen_limit = 31007 -- hard coded
+local mapgen_limit =
+	bound(0, m_floor(tonumber(minetest.settings:get("mapgen_limit")) or max_mapgen_limit), max_mapgen_limit)
+local mapgen_limit_b = m_floor(mapgen_limit / mapblock_size) -- # of mapblocks
+
+-- *actual* minimum and maximum coordinates - one mapblock short of the theoretical min and max
+local map_min_i = (-mapgen_limit_b * mapblock_size) + chunksize_nodes
+local map_max_i = ((mapgen_limit_b + 1) * mapblock_size - 1) - chunksize_nodes
 
 local map_min_p = v_new(map_min_i, map_min_i, map_min_i)
 local map_max_p = v_new(map_max_i, map_max_i, map_max_i)
 
 futil.vector = {}
 
-function futil.get_bounds(pos, radius)
+function futil.vector.get_bounds(pos, radius)
 	return v_sub(pos, radius), v_add(pos, radius)
 end
 
-function futil.get_world_bounds()
+futil.get_bounds = futil.vector.get_bounds
+
+function futil.vector.get_world_bounds()
 	return map_min_p, map_max_p
 end
 
-function futil.get_blockpos(pos)
+function futil.vector.get_blockpos(pos)
 	return v_new(m_floor(pos.x / mapblock_size), m_floor(pos.y / mapblock_size), m_floor(pos.z / mapblock_size))
 end
 
-function futil.get_block_bounds(blockpos)
+futil.get_blockpos = futil.vector.get_blockpos
+
+function futil.vector.get_block_bounds(blockpos)
 	return v_new(blockpos.x * mapblock_size, blockpos.y * mapblock_size, blockpos.z * mapblock_size),
 		v_new(
 			blockpos.x * mapblock_size + (mapblock_size - 1),
@@ -53,32 +57,40 @@ function futil.get_block_bounds(blockpos)
 		)
 end
 
-function futil.get_chunkpos(pos)
+futil.get_block_bounds = futil.vector.get_block_bounds
+
+function futil.vector.get_chunkpos(pos)
 	return v_new(
-		m_floor((pos.x - map_min_i) / chunkblocks),
-		m_floor((pos.y - map_min_i) / chunkblocks),
-		m_floor((pos.z - map_min_i) / chunkblocks)
+		m_floor((pos.x - map_min_i) / chunksize_nodes),
+		m_floor((pos.y - map_min_i) / chunksize_nodes),
+		m_floor((pos.z - map_min_i) / chunksize_nodes)
 	)
 end
 
-function futil.get_chunk_bounds(chunkpos)
+futil.get_chunkpos = futil.vector.get_chunkpos
+
+function futil.vector.get_chunk_bounds(chunkpos)
 	return v_new(
-		chunkpos.x * chunkblocks + map_min_i,
-		chunkpos.y * chunkblocks + map_min_i,
-		chunkpos.z * chunkblocks + map_min_i
+		chunkpos.x * chunksize_nodes + map_min_i,
+		chunkpos.y * chunksize_nodes + map_min_i,
+		chunkpos.z * chunksize_nodes + map_min_i
 	),
 		v_new(
-			chunkpos.x * chunkblocks + map_min_i + (chunkblocks - 1),
-			chunkpos.y * chunkblocks + map_min_i + (chunkblocks - 1),
-			chunkpos.z * chunkblocks + map_min_i + (chunkblocks - 1)
+			chunkpos.x * chunksize_nodes + map_min_i + (chunksize_nodes - 1),
+			chunkpos.y * chunksize_nodes + map_min_i + (chunksize_nodes - 1),
+			chunkpos.z * chunksize_nodes + map_min_i + (chunksize_nodes - 1)
 		)
 end
 
-function futil.formspec_pos(pos)
+futil.get_chunk_bounds = futil.vector.get_chunk_bounds
+
+function futil.vector.formspec_pos(pos)
 	return ("%i,%i,%i"):format(pos.x, pos.y, pos.z)
 end
 
-function futil.iterate_area(minp, maxp)
+futil.formspec_pos = futil.vector.formspec_pos
+
+function futil.vector.iterate_area(minp, maxp)
 	minp, maxp = v_sort(minp, maxp)
 	local min_x = minp.x
 	local min_z = minp.z
@@ -113,26 +125,34 @@ function futil.iterate_area(minp, maxp)
 	end
 end
 
-function futil.iterate_volume(pos, radius)
+futil.iterate_area = futil.vector.iterate_area
+
+function futil.vector.iterate_volume(pos, radius)
 	return futil.iterate_area(futil.get_bounds(pos, radius))
 end
+
+futil.iterate_volume = futil.vector.iterate_volume
 
 function futil.is_pos_in_bounds(minp, pos, maxp)
 	minp, maxp = v_sort(minp, maxp)
 	return (in_bounds(minp.x, pos.x, maxp.x) and in_bounds(minp.y, pos.y, maxp.y) and in_bounds(minp.z, pos.z, maxp.z))
 end
 
-function futil.is_inside_world_bounds(pos)
+function futil.vector.is_inside_world_bounds(pos)
 	return futil.is_pos_in_bounds(map_min_p, pos, map_max_p)
 end
 
-function futil.bound_position_to_world(pos)
+futil.is_inside_world_bounds = futil.vector.is_inside_world_bounds
+
+function futil.vector.bound_position_to_world(pos)
 	return v_new(
 		bound(map_min_i, pos.x, map_max_i),
 		bound(map_min_i, pos.y, map_max_i),
 		bound(map_min_i, pos.z, map_max_i)
 	)
 end
+
+futil.bound_position_to_world = futil.vector.bound_position_to_world
 
 function futil.vector.volume(pos1, pos2)
 	local minp, maxp = v_sort(pos1, pos2)
@@ -214,7 +234,7 @@ function futil.can_see_sky(pos, distance, trials, hits_needed)
 	return num_hits >= hits_needed
 end
 
-function futil.is_valid_position(pos)
+function futil.vector.is_valid_position(pos)
 	if type(pos) ~= "table" then
 		return false
 	elseif not (type(pos.x) == "number" and type(pos.y) == "number" and type(pos.z) == "number") then
