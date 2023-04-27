@@ -1,6 +1,6 @@
 local f = string.format
 
-function futil.resolve_item(item_or_string)
+function futil.resolve_item(item_or_string, allow_unregistered)
 	local item_stack = ItemStack(item_or_string)
 	local name = item_stack:get_name()
 
@@ -16,14 +16,14 @@ function futil.resolve_item(item_or_string)
 		end
 	end
 
-	if minetest.registered_items[name] then
+	if minetest.registered_items[name] or allow_unregistered then
 		item_stack:set_name(name)
 		return item_stack:to_string()
 	end
 end
 
 function futil.resolve_itemstack(item_or_string)
-	return ItemStack(futil.resolve_item(item_or_string))
+	return ItemStack(futil.resolve_item(item_or_string, true))
 end
 
 if ItemStack().equals then
