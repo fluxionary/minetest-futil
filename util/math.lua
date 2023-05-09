@@ -69,3 +69,7 @@ function futil.math.isum(i, initial)
 
 	return sum
 end
+
+function futil.math.probabilistic_round(v)
+	return math.floor(v + math.random())
+end
