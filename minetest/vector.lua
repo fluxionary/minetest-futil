@@ -42,6 +42,8 @@ function futil.vector.get_world_bounds()
 	return map_min_p, map_max_p
 end
 
+futil.get_world_bounds = futil.vector.get_world_bounds
+
 function futil.vector.get_blockpos(pos)
 	return v_new(m_floor(pos.x / mapblock_size), m_floor(pos.y / mapblock_size), m_floor(pos.z / mapblock_size))
 end
