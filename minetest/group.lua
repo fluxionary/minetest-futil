@@ -4,9 +4,7 @@ function futil.add_groups(itemstring, new_groups)
 		error(("attempting to override unknown item %s"):format(itemstring))
 	end
 	local groups = table.copy(def.groups or {})
-	for group, value in pairs(new_groups) do
-		groups[group] = value
-	end
+	futil.table.set_all(groups, new_groups)
 	minetest.override_item(itemstring, { groups = groups })
 end
 
