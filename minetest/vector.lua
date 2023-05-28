@@ -165,29 +165,36 @@ function futil.split_region_by_mapblock(pos1, pos2, num_blocks)
 	local chunk_size = 16 * (num_blocks or 1)
 	local chunk_span = chunk_size - 1
 
-	pos1, pos2 = v_sort(pos1, pos2)
+	pos1, pos2 = vector.sort(pos1, pos2)
 
-	local x1 = pos1.x - (pos1.x % chunk_size)
-	local x2 = pos2.x - (pos2.x % chunk_size) + chunk_span
-	local y1 = pos1.y - (pos1.y % chunk_size)
-	local y2 = pos2.y - (pos2.y % chunk_size) + chunk_span
-	local z1 = pos1.z - (pos1.z % chunk_size)
-	local z2 = pos2.z - (pos2.z % chunk_size) + chunk_span
+	local min_x = pos1.x
+	local min_y = pos1.y
+	local min_z = pos1.z
+	local max_x = pos2.x
+	local max_y = pos2.y
+	local max_z = pos2.z
+
+	local x1 = min_x - (min_x % chunk_size)
+	local x2 = max_x - (max_x % chunk_size) + chunk_span
+	local y1 = min_y - (min_y % chunk_size)
+	local y2 = max_y - (max_y % chunk_size) + chunk_span
+	local z1 = min_z - (min_z % chunk_size)
+	local z2 = max_z - (max_z % chunk_size) + chunk_span
 
 	local chunks = {}
 	for y = y1, y2, chunk_size do
-		local y_min = m_max(pos1.y, y)
-		local y_max = m_min(pos2.y, y + chunk_span)
+		local y_min = m_max(min_y, y)
+		local y_max = m_min(max_y, y + chunk_span)
 
 		for x = x1, x2, chunk_size do
-			local x_min = m_max(pos1.x, x)
-			local x_max = m_min(pos2.x, x + chunk_span)
+			local x_min = m_max(min_x, x)
+			local x_max = m_min(max_x, x + chunk_span)
 
 			for z = z1, z2, chunk_size do
-				local z_min = m_max(pos1.z, z)
-				local z_max = m_min(pos2.z, z + chunk_span)
+				local z_min = m_max(min_z, z)
+				local z_max = m_min(max_z, z + chunk_span)
 
-				table.insert(chunks, { v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max) })
+				chunks[#chunks + 1] = { v_new(x_min, y_min, z_min), v_new(x_max, y_max, z_max) }
 			end
 		end
 	end
