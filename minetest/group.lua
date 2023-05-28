@@ -44,7 +44,7 @@ function futil.generate_items_by_group()
 	local items_by_group = {}
 
 	for item, def in pairs(minetest.registered_items) do
-		for group in ipairs(def.groups or {}) do
+		for group in pairs(def.groups or {}) do
 			local items = items_by_group[group] or {}
 			table.insert(items, item)
 			items_by_group[group] = items
