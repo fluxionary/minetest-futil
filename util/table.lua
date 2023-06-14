@@ -4,6 +4,7 @@ function futil.table.set_all(t1, t2)
 	for k, v in pairs(t2) do
 		t1[k] = v
 	end
+	return t1
 end
 
 function futil.table.pairs_by_value(t, sort_function)
