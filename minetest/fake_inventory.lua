@@ -135,21 +135,32 @@ function FakeInventory:set_lists(lists)
 end
 
 -- add item somewhere in list, returns leftover `ItemStack`.
-function FakeInventory:add_item(listname, stack)
+function FakeInventory:add_item(listname, new_item)
 	local list = self._lists[listname]
-	stack = ItemStack(stack)
-	if not list then
-		return stack
+	new_item = ItemStack(new_item)
+	if new_item:is_empty() or not list or #list == 0 then
+		return new_item
 	end
 
+	-- first try to find if it could be added to some existing items
 	for _, our_stack in ipairs(list) do
-		stack = our_stack:add_item(stack)
-		if stack:is_empty() then
+		if not our_stack:is_empty() then
+			new_item = our_stack:add_item(new_item)
+			if new_item:is_empty() then
+				return new_item
+			end
+		end
+	end
+
+	-- then try to add it to empty slots
+	for _, our_stack in ipairs(list) do
+		new_item = our_stack:add_item(new_item)
+		if new_item:is_empty() then
 			break
 		end
 	end
 
-	return stack
+	return new_item
 end
 
 -- returns `true` if the stack of items can be fully added to the list
