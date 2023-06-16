@@ -1,6 +1,6 @@
-local Deque = futil.class1()
-
 -- inspired by https://www.lua.org/pil/11.4.html
+
+local Deque = futil.class1()
 
 function Deque:_init(def)
 	self._a = 0
