@@ -1,5 +1,6 @@
 local f = string.format
 
+-- if allow_unregistered is false or absent, if the original item or its alias is not a registered item, will return nil
 function futil.resolve_item(item_or_string, allow_unregistered)
 	local item_stack = ItemStack(item_or_string)
 	local name = item_stack:get_name()
