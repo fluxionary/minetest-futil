@@ -252,3 +252,11 @@ function futil.vector.is_valid_position(pos)
 		return futil.is_inside_world_bounds(vector.round(pos))
 	end
 end
+
+local function hash_num(i)
+	return string.format("%a", i)
+end
+
+function futil.vector.hash(pos)
+	return hash_num(pos.x) .. hash_num(pos.y) .. hash_num(pos.z)
+end
