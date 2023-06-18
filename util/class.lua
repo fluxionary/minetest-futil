@@ -14,6 +14,18 @@ function futil.class1(super)
 		end,
 	})
 
+	function class:is_a(class2)
+		if class == class2 then
+			return true
+		end
+
+		if super and super:is_a(class2) then
+			return true
+		end
+
+		return false
+	end
+
 	return class
 end
 
