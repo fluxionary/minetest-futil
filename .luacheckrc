@@ -100,6 +100,7 @@ stds.minetest = {
 				equals = {},
 				floor = {},
 				from_string = {},
+				in_area = {},
 				length = {},
 				metatable = {},
 				multiply = {},
