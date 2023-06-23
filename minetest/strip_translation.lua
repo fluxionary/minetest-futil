@@ -202,6 +202,4 @@ function futil.get_safe_short_description(item)
 	local single_line_parsed = erase_after_newline(parsed)
 	local single_line = table.concat(unparse(single_line_parsed), "")
 	return single_line
-		.. minetest.get_color_escape_sequence("#ffffff")
-		.. minetest.get_background_escape_sequence("#00000000")
 end
