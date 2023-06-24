@@ -6,6 +6,7 @@ over *all* active objects in the world, which can be slow when there's thousands
 
 the current implementation is static - all data points are provided up front.
 
+https://en.wikipedia.org/wiki/Min/max_kd-tree
 https://medium.com/omarelgabrys-blog/geometric-applications-of-bsts-e58f0a5019f3
 ]]
 local in_area = vector.in_area
@@ -46,17 +47,27 @@ local function bisect(pos_and_values, axis_i)
 	end
 
 	local axis = axes[axis_i]
-	table.sort(pos_and_values, function(a, b)
+
+	local median = futil.table.medianize(pos_and_values, function(a, b)
 		return a[POS][axis] < b[POS][axis]
 	end)
+	local min = pos_and_values[1][POS][axis]
+	local max = min
+	for i = 2, #pos_and_values do
+		local v = pos_and_values[i][POS][axis]
+		if v < min then
+			min = v
+		elseif v > max then
+			max = v
+		end
+	end
 
-	local m = math.floor(#pos_and_values / 2) -- m is to the left of the median
 	local next_axis_i = (axis_i % #axes) + 1
 	return Node(
-		pos_and_values[1][POS][axis], -- min
-		pos_and_values[#pos_and_values][POS][axis], --max
-		bisect({ unpack(pos_and_values, 1, m) }, next_axis_i),
-		bisect({ unpack(pos_and_values, m + 1) }, next_axis_i)
+		min,
+		max,
+		bisect({ unpack(pos_and_values, 1, median) }, next_axis_i),
+		bisect({ unpack(pos_and_values, median + 1) }, next_axis_i)
 	)
 end
 
@@ -94,6 +105,36 @@ function PointSearchTree:dump()
 	return table.concat(getlines(self._root, 1), "\n")
 end
 
+local function make_iterator(pmin, pmax, predicate, accumulate)
+	local function iterate(node, axis_i)
+		local next_axis_i = (axis_i % 3) + 1
+		local next_axis = axes[next_axis_i]
+
+		local left = node.left
+		if left then
+			if left:is_a(Leaf) then
+				if predicate(left) then
+					accumulate(left)
+				end
+			elseif pmin[next_axis] <= left.max then
+				iterate(left, next_axis_i)
+			end
+		end
+
+		local right = node.right
+		if right then
+			if right:is_a(Leaf) then
+				if predicate(right) then
+					accumulate(right)
+				end
+			elseif right.min <= pmax[next_axis] then
+				iterate(right, next_axis_i)
+			end
+		end
+	end
+	return iterate
+end
+
 function PointSearchTree:iterate_values_in_area(pmin, pmax)
 	if not self._root then
 		return function() end
@@ -105,37 +146,12 @@ function PointSearchTree:iterate_values_in_area(pmin, pmax)
 		return function() end
 	end
 
-	local function iterator(node, axis_i)
-		local next_axis_i = (axis_i % 3) + 1
-		local next_axis = axes[next_axis_i]
-		local next_min = pmin[next_axis]
-		local next_max = pmax[next_axis]
-
-		local left = node.left
-		if left then
-			if left:is_a(Leaf) then
-				if in_area(left[POS], pmin, pmax) then
-					coroutine.yield(left[POS], left[VALUE])
-				end
-			elseif next_min <= left.max then
-				iterator(left, next_axis_i)
-			end
-		end
-
-		local right = node.right
-		if right then
-			if right:is_a(Leaf) then
-				if in_area(right[POS], pmin, pmax) then
-					coroutine.yield(right[POS], right[VALUE])
-				end
-			elseif right.min <= next_max then
-				iterator(right, next_axis_i)
-			end
-		end
-	end
-
 	return coroutine.wrap(function()
-		iterator(self._root, 1)
+		make_iterator(pmin, pmax, function(leaf)
+			return in_area(leaf[POS], pmin, pmax)
+		end, function(leaf)
+			coroutine.yield(leaf[POS], leaf[VALUE])
+		end)(self._root, 1)
 	end)
 end
 
@@ -151,36 +167,12 @@ function PointSearchTree:get_values_in_area(pmin, pmax)
 		return via
 	end
 
-	local function iterator(node, axis_i)
-		local next_axis_i = (axis_i % 3) + 1
-		local next_axis = axes[next_axis_i]
-		local next_min = pmin[next_axis]
-		local next_max = pmax[next_axis]
+	make_iterator(pmin, pmax, function(leaf)
+		return in_area(leaf[POS], pmin, pmax)
+	end, function(leaf)
+		via[#via + 1] = leaf[VALUE]
+	end)(self._root, 1)
 
-		local left = node.left
-		if left then
-			if left:is_a(Leaf) then
-				if in_area(left[POS], pmin, pmax) then
-					via[#via + 1] = left[VALUE]
-				end
-			elseif next_min <= left.max then
-				iterator(left, next_axis_i)
-			end
-		end
-
-		local right = node.right
-		if right then
-			if right:is_a(Leaf) then
-				if in_area(right[POS], pmin, pmax) then
-					via[#via + 1] = right[VALUE]
-				end
-			elseif right.min <= next_max then
-				iterator(right, next_axis_i)
-			end
-		end
-	end
-
-	iterator(self._root, 1)
 	return via
 end
 
@@ -196,37 +188,14 @@ function PointSearchTree:iterate_values_inside_radius(center, radius)
 		return function() end
 	end
 
-	local function iterator(node, axis_i)
-		local next_axis_i = (axis_i % 3) + 1
-		local next_axis = axes[next_axis_i]
-		local next_min = pmin[next_axis]
-		local next_max = pmax[next_axis]
-
-		local left = node.left
-		if left then
-			if left:is_a(Leaf) then
-				if vector.distance(center, left[POS]) <= radius then
-					coroutine.yield(left[POS], left[VALUE])
-				end
-			elseif next_min <= left.max then
-				iterator(left, next_axis_i)
-			end
-		end
-
-		local right = node.right
-		if right then
-			if right:is_a(Leaf) then
-				if vector.distance(center, right[POS]) <= radius then
-					coroutine.yield(right[POS], right[VALUE])
-				end
-			elseif right.min <= next_max then
-				iterator(right, next_axis_i)
-			end
-		end
-	end
+	local v_distance = vector.distance
 
 	return coroutine.wrap(function()
-		iterator(self._root, 1)
+		make_iterator(pmin, pmax, function(leaf)
+			return v_distance(center, leaf[POS]) <= radius
+		end, function(leaf)
+			coroutine.yield(leaf[POS], leaf[VALUE])
+		end)(self._root, 1)
 	end)
 end
 
@@ -243,36 +212,13 @@ function PointSearchTree:get_values_inside_radius(center, radius)
 		return vir
 	end
 
-	local function iterator(node, axis_i)
-		local next_axis_i = (axis_i % 3) + 1
-		local next_axis = axes[next_axis_i]
-		local next_min = pmin[next_axis]
-		local next_max = pmax[next_axis]
+	local v_distance = vector.distance
 
-		local left = node.left
-		if left then
-			if left:is_a(Leaf) then
-				if vector.distance(center, left[POS]) <= radius then
-					vir[#vir + 1] = left[VALUE]
-				end
-			elseif next_min <= left.max then
-				iterator(left, next_axis_i)
-			end
-		end
-
-		local right = node.right
-		if right then
-			if right:is_a(Leaf) then
-				if vector.distance(center, right[POS]) <= radius then
-					vir[#vir + 1] = right[VALUE]
-				end
-			elseif right.min <= next_max then
-				iterator(right, next_axis_i)
-			end
-		end
-	end
-
-	iterator(self._root, 1)
+	make_iterator(pmin, pmax, function(leaf)
+		return v_distance(center, leaf[POS]) <= radius
+	end, function(leaf)
+		vir[#vir + 1] = leaf[VALUE]
+	end)(self._root, 1)
 
 	return vir
 end

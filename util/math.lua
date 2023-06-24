@@ -73,3 +73,7 @@ end
 function futil.math.probabilistic_round(v)
 	return math.floor(v + math.random())
 end
+
+function futil.math.cmp(a, b)
+	return a < b
+end
