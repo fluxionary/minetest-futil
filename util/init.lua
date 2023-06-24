@@ -13,4 +13,5 @@ futil.dofile("util", "table")
 futil.dofile("util", "equals") -- depends on table
 futil.dofile("util", "functional") -- depends on table
 futil.dofile("util", "iterators") -- depends on functional
+futil.dofile("util", "selection") -- depends on table, math
 futil.dofile("util", "time") -- depends on math
