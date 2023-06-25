@@ -49,13 +49,13 @@ local function partition(t, left, right, pivot_i, i, cmp)
 	end
 end
 
-local function quickselect(t, left, right, i, pivot, cmp)
+local function quickselect(t, left, right, i, pivot_alg, cmp)
 	cmp = cmp or default_cmp
 	while true do
 		if left == right then
 			return left
 		end
-		local pivot_i = partition(t, left, right, pivot(t, left, right, cmp), i, cmp)
+		local pivot_i = partition(t, left, right, pivot_alg(t, left, right, cmp), i, cmp)
 		if i == pivot_i then
 			return i
 		elseif i < pivot_i then
@@ -68,11 +68,13 @@ end
 
 futil.selection.quickselect = quickselect
 
-function futil.selection.random_pivot(t, left, right, cmp)
+futil.selection.pivot = {}
+
+function futil.selection.pivot.random(t, left, right, cmp)
 	return random(left, right)
 end
 
-local function median_of_medians_pivot(t, left, right, cmp)
+local function pivot_medians_of_medians(t, left, right, cmp)
 	cmp = cmp or default_cmp
 	if right - left < 5 then
 		return partition5(t, left, right, cmp)
@@ -83,10 +85,10 @@ local function median_of_medians_pivot(t, left, right, cmp)
 		swap(t, median5, left + floor((i - left) / 5))
 	end
 	local mid = floor((right - left) / 10) + left + 1
-	return quickselect(t, left, left + floor((right - left) / 5), mid, median_of_medians_pivot, cmp)
+	return quickselect(t, left, left + floor((right - left) / 5), mid, pivot_medians_of_medians, cmp)
 end
 
-futil.selection.median_of_medians_pivot = median_of_medians_pivot
+futil.selection.pivot.median_of_medians = pivot_medians_of_medians
 
 --[[
 make use of quickselect to munge a table:
@@ -99,9 +101,9 @@ pivot is a pivot algorithm, defaults to random selection
 cmp is a comparison function.
 returns median_index.
 ]]
-function futil.selection.medianize(t, pivot, cmp)
+function futil.selection.select(t, pivot_alg, cmp)
 	cmp = cmp or default_cmp
-	pivot = pivot or futil.selection.random_pivot
+	pivot_alg = pivot_alg or futil.selection.pivot.random
 	local median_index = math.floor(#t / 2)
-	return quickselect(t, 1, #t, median_index, pivot, cmp)
+	return quickselect(t, 1, #t, median_index, pivot_alg, cmp)
 end

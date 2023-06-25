@@ -9,6 +9,8 @@ the current implementation is static - all data points are provided up front.
 https://en.wikipedia.org/wiki/Min/max_kd-tree
 https://medium.com/omarelgabrys-blog/geometric-applications-of-bsts-e58f0a5019f3
 ]]
+local sort = table.sort
+
 local in_area = vector.in_area
 	or function(pos, pmin, pmax)
 		return pmin.x <= pos.x
@@ -41,40 +43,64 @@ end
 
 local PointSearchTree = futil.class1()
 
-local function bisect(pos_and_values, axis_i)
+futil.min_median_max = {}
+
+function futil.min_median_max.sort(t, indexer)
+	if indexer then
+		sort(t, function(a, b)
+			return indexer(a) < indexer(b)
+		end)
+	else
+		sort(t)
+	end
+	return t[1], math.floor(#t / 2), t[#t]
+end
+
+function futil.min_median_max.gen_select(pivot_alg)
+	return function(t, indexer)
+		local median = futil.selection.select(t, pivot_alg, function(a, b)
+			return indexer(a) < indexer(b)
+		end)
+		local min = indexer(t[1])
+		local max = min
+		for i = 2, #t do
+			local v = indexer(t[i])
+			if v < min then
+				min = v
+			elseif v > max then
+				max = v
+			end
+		end
+		return min, median, max
+	end
+end
+
+local function bisect(pos_and_values, axis_i, min_median_max)
 	if #pos_and_values == 1 then
 		return Leaf(pos_and_values[1])
 	end
 
 	local axis = axes[axis_i]
 
-	local median = futil.table.medianize(pos_and_values, function(a, b)
-		return a[POS][axis] < b[POS][axis]
+	local min, median, max = min_median_max(pos_and_values, function(i)
+		return i[POS][axis]
 	end)
-	local min = pos_and_values[1][POS][axis]
-	local max = min
-	for i = 2, #pos_and_values do
-		local v = pos_and_values[i][POS][axis]
-		if v < min then
-			min = v
-		elseif v > max then
-			max = v
-		end
-	end
 
 	local next_axis_i = (axis_i % #axes) + 1
 	return Node(
 		min,
 		max,
-		bisect({ unpack(pos_and_values, 1, median) }, next_axis_i),
-		bisect({ unpack(pos_and_values, median + 1) }, next_axis_i)
+		bisect({ unpack(pos_and_values, 1, median) }, next_axis_i, min_median_max),
+		bisect({ unpack(pos_and_values, median + 1) }, next_axis_i, min_median_max)
 	)
 end
 
-function PointSearchTree:_init(pos_and_values)
+function PointSearchTree:_init(pos_and_values, min_median_max)
+	pos_and_values = pos_and_values or {}
+	min_median_max = min_median_max or futil.min_median_max.gen_select(futil.selection.pivot.median_of_medians)
 	self._len = #pos_and_values
 	if #pos_and_values > 0 then
-		self._root = bisect(pos_and_values, 1)
+		self._root = bisect(pos_and_values, 1, min_median_max)
 	end
 end
 
