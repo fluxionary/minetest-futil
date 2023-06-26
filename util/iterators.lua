@@ -85,4 +85,22 @@ function iterators.values(t)
 	end
 end
 
+function iterators.accumulate(t, composer, initial)
+	local value = initial
+	local i = futil.table.iterate(t)
+	return function()
+		local next_value = i()
+		if next_value then
+			if value == nil then
+				value = next_value
+			elseif composer then
+				value = composer(value, next_value)
+			else
+				value = value + next_value
+			end
+			return value
+		end
+	end
+end
+
 futil.iterators = iterators
