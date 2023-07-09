@@ -1,13 +1,33 @@
 --[[
-a data structure which can efficiently retrieve values within specific regions of 3d space.
+a data structure which can efficiently retrieve values within specific rectangular regions of 3d space.
 
-the hope here is that this will provide a faster alternative to `minetest.get_objects_in_area()`, which iterates
-over *all* active objects in the world, which can be slow when there's thousands of objects in the world.
-
-the current implementation is static - all data points are provided up front.
-
+the closest relevant descriptions of this problem and solution are in the following:
 https://en.wikipedia.org/wiki/Min/max_kd-tree
 https://medium.com/omarelgabrys-blog/geometric-applications-of-bsts-e58f0a5019f3
+
+creation is O(n log n)
+finding objects in a region is O(m + log n) if there's m objects in the region.
+
+the hope here is that this will provide a faster alternative to `minetest.get_objects_in_area()`. that currently
+iterates over *all* active objects in the world, which can be slow when there's ten thousand or more of objects in the
+world, and you are only interested in a few of them. in particular, the your-land server usually has 5-8 thousand
+objects loaded at once, and can have hundreds of mobs calling `get_objects_in_area` every couple server steps. perftop
+definitively implicated this routine as being a major source of lag. the question, now, is what to do about it.
+
+the current implementation doesn't allow for insertion, deletion, or changes in location. if your points move around,
+you're gonna have to rebuild the whole tree from scratch, which currently limits the usefulness.
+
+TODO: read this and incorporate if applicable: https://arxiv.org/abs/1410.5420
+
+== footnotes about the algorithms ==
+currently, we're hard-coding the usage of the [median of medians](https://en.wikipedia.org/wiki/Median_of_medians)
+algorithm as the pivot strategy, as this resulted in unexpectedly dramatic improvements over random selection in
+some informal performance tests i did.
+
+== footnotes about results ==
+currently, performance can range from taking 1/20th of the time of the engine call, to 100 times as long. this
+makes me realize that this is worth pursuing, but probably this will need to be ported to c++ to consistently provide
+a benefit. but, i'll absolutely need to figure out a self-balancing strategy before that'll be appropriate.
 ]]
 local sort = table.sort
 
