@@ -430,7 +430,7 @@ with some additions.
 
 ### globalstep
 
-implements common boilerplate for globalsteps which should execute every so often.
+implements common boilerplate for globalsteps which are intended to execute every so often.
 
 ```lua
 futil.register_globalstep({

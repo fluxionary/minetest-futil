@@ -9,9 +9,9 @@ local my_hud = futil.define_hud("my_hud", {
 
 local f = string.format
 
-local Hud = futil.class1()
+local ManagedHud = futil.class1()
 
-function Hud:_init(hud_name, def)
+function ManagedHud:_init(hud_name, def)
 	self.name = hud_name
 
 	self._name_field = def.name_field or "name"
@@ -25,7 +25,7 @@ function Hud:_init(hud_name, def)
 	self._hud_name = f("hud_manager:%s", hud_name)
 end
 
-function Hud:is_enabled(player)
+function ManagedHud:is_enabled(player)
 	local meta = player:get_meta()
 	local value = meta:get(self._hud_enabled_key)
 	if value == nil then
@@ -35,7 +35,7 @@ function Hud:is_enabled(player)
 	end
 end
 
-function Hud:set_enabled(player, value)
+function ManagedHud:set_enabled(player, value)
 	local meta = player:get_meta()
 	if minetest.is_yes(value) then
 		meta:set_string(self._hud_enabled_key, "y")
@@ -44,7 +44,7 @@ function Hud:set_enabled(player, value)
 	end
 end
 
-function Hud:toggle_enabled(player)
+function ManagedHud:toggle_enabled(player)
 	local meta = player:get_meta()
 	local enabled = not self:is_enabled(player)
 	if enabled then
@@ -55,7 +55,7 @@ function Hud:toggle_enabled(player)
 	return enabled
 end
 
-function Hud:update(player)
+function ManagedHud:update(player)
 	local is_enabled = self:is_enabled(player)
 	local player_name = player:get_player_name()
 	local hud_id = self._hud_id_by_player_name[player_name]
@@ -83,8 +83,8 @@ function Hud:update(player)
 				self._hud_id_by_player_name[player_name] = nil
 			end
 			return
-		elseif new_hud_def[self._name_field] then
-			error("you cannot specify the value of the name field, this is generated")
+		elseif new_hud_def[self._name_field] and new_hud_def[self._name_field] ~= self._hud_name then
+			error(f("you cannot specify the value of the %q field, this is generated", self._name_field))
 		end
 
 		if old_hud_def then
@@ -108,14 +108,14 @@ function futil.define_hud(hud_name, def)
 	if futil.defined_huds[hud_name] then
 		error(f("hud %s already exists", hud_name))
 	end
-	local hud = Hud(hud_name, def)
+	local hud = ManagedHud(hud_name, def)
 	futil.defined_huds[hud_name] = hud
 	return hud
 end
 
 local elapsed_by_hud_name = {}
 minetest.register_globalstep(function(dtime)
-	local players = minetest.get_connected_players()
+	local players
 	for hud_name, hud in pairs(futil.defined_huds) do
 		if hud._period then
 			local elapsed = (elapsed_by_hud_name[hud_name] or 0) + dtime
@@ -123,6 +123,7 @@ minetest.register_globalstep(function(dtime)
 				elapsed_by_hud_name[hud_name] = elapsed
 			else
 				elapsed_by_hud_name[hud_name] = 0
+				players = players or minetest.get_connected_players()
 				for i = 1, #players do
 					hud:update(players[i])
 				end

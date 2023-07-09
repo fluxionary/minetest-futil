@@ -151,3 +151,12 @@ local function swap(t, i, j)
 end
 
 futil.table.swap = swap
+
+function futil.table.setdefault(t, key, default)
+	local value = t[key]
+	if value == nil then
+		t[key] = default
+		return default
+	end
+	return value
+end
