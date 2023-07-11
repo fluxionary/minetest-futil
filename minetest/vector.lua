@@ -218,29 +218,30 @@ function futil.is_indoors(pos, distance, trials, hits_needed)
 	for _ = 1, trials do
 		local ruv = futil.random_unit_vector()
 		local target = pos + (distance * ruv)
-		if Raycast(pos, target, false, false)() then
+		local hit = Raycast(pos, target, false, false)()
+		if hit then
 			num_hits = num_hits + 1
-			break
 		end
 	end
 	return num_hits >= hits_needed
 end
 
-function futil.can_see_sky(pos, distance, trials, hits_needed)
-	distance = distance or 20
+function futil.can_see_sky(pos, distance, trials, max_hits)
+	distance = distance or 200
 	trials = trials or 11
-	hits_needed = hits_needed or 5
+	max_hits = max_hits or 9
 	local num_hits = 0
 	for _ = 1, trials do
 		local ruv = futil.random_unit_vector()
 		ruv.y = math.abs(ruv.y) -- look up, not at the ground
 		local target = pos + (distance * ruv)
-		if Raycast(pos, target, false, false)() then
+		local hit = Raycast(pos, target, false, false)()
+		if hit then
 			num_hits = num_hits + 1
-			break
 		end
 	end
-	return num_hits >= hits_needed
+	print(trials, num_hits)
+	return num_hits <= max_hits
 end
 
 function futil.vector.is_valid_position(pos)
@@ -253,10 +254,6 @@ function futil.vector.is_valid_position(pos)
 	end
 end
 
-local function hash_num(i)
-	return string.format("%a", i)
-end
-
 function futil.vector.hash(pos)
-	return hash_num(pos.x) .. hash_num(pos.y) .. hash_num(pos.z)
+	return string.format("%a%a%a", pos.x, pos.y, pos.z)
 end
