@@ -54,6 +54,8 @@ function futil.generate_items_by_group()
 	futil.items_by_group = items_by_group
 end
 
--- it's not 100% safe to assume items and groups can't change after this point.
--- but please, don't do that :\
-minetest.register_on_mods_loaded(futil.generate_items_by_group)
+if INIT == "game" then
+	-- it's not 100% safe to assume items and groups can't change after this point.
+	-- but please, don't do that :\
+	minetest.register_on_mods_loaded(futil.generate_items_by_group)
+end

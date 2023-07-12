@@ -7,6 +7,7 @@ stds.minetest = {
 		"DIR_DELIM",
 		"dump",
 		"dump2",
+		"INIT",
 
 		math = {
 			fields = {
