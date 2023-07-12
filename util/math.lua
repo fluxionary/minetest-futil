@@ -77,3 +77,11 @@ end
 function futil.math.cmp(a, b)
 	return a < b
 end
+
+function futil.math.deg2rad(deg)
+	return deg * math.pi / 180
+end
+
+function futil.math.rad2deg(rad)
+	return rad * 180 / math.pi
+end
