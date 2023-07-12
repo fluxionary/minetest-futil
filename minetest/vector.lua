@@ -50,13 +50,20 @@ end
 
 futil.get_blockpos = futil.vector.get_blockpos
 
+function futil.vector.get_block_min(blockpos)
+	return v_new(blockpos.x * mapblock_size, blockpos.y * mapblock_size, blockpos.z * mapblock_size)
+end
+
+function futil.vector.get_block_max(blockpos)
+	return v_new(
+		blockpos.x * mapblock_size + (mapblock_size - 1),
+		blockpos.y * mapblock_size + (mapblock_size - 1),
+		blockpos.z * mapblock_size + (mapblock_size - 1)
+	)
+end
+
 function futil.vector.get_block_bounds(blockpos)
-	return v_new(blockpos.x * mapblock_size, blockpos.y * mapblock_size, blockpos.z * mapblock_size),
-		v_new(
-			blockpos.x * mapblock_size + (mapblock_size - 1),
-			blockpos.y * mapblock_size + (mapblock_size - 1),
-			blockpos.z * mapblock_size + (mapblock_size - 1)
-		)
+	return futil.vector.get_block_min(blockpos), futil.vector.get_block_max(blockpos)
 end
 
 futil.get_block_bounds = futil.vector.get_block_bounds
