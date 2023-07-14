@@ -151,6 +151,10 @@ function futil.vector.is_inside_world_bounds(pos)
 	return futil.is_pos_in_bounds(map_min_p, pos, map_max_p)
 end
 
+function futil.vector.is_blockpos_inside_world_bounds(blockpos)
+	return futil.vector.is_inside_world_bounds(futil.vector.get_block_min(blockpos))
+end
+
 futil.is_inside_world_bounds = futil.vector.is_inside_world_bounds
 
 function futil.vector.bound_position_to_world(pos)
