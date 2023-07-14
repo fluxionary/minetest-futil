@@ -1,4 +1,4 @@
-fmod.check_version({ year = 2023, month = 7, day = 12 }) -- futil in async
+fmod.check_version({ year = 2023, month = 7, day = 14 }) -- async dofile
 
 futil = fmod.create()
 
@@ -7,5 +7,5 @@ futil.dofile("collections", "init") -- depends on util
 futil.dofile("minetest", "init") -- depends on util
 
 if INIT == "game" then
-	minetest.register_async_dofile(futil.modpath .. DIR_DELIM .. "init.lua")
+	futil.async_dofile("init")
 end
