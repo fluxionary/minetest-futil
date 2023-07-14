@@ -201,6 +201,7 @@ function Set:difference(other)
 	end
 	local difference = Set(self)
 	difference:difference_update(other)
+	return difference
 end
 
 function Set:__sub(other)
