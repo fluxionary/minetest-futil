@@ -1,3 +1,5 @@
+-- box definition below node boxes: https://github.com/minetest/minetest/blob/master/doc/lua_api.md#node-boxes
+
 local x1 = 1
 local y1 = 2
 local z1 = 3
@@ -35,22 +37,22 @@ function futil.box_offset(box, number_or_vector)
 	end
 end
 
-function futil.is_box(something)
-	if type(something) == "table" and #something == 6 then
-		for _, x in ipairs(something) do
+function futil.is_box(box)
+	if type(box) == "table" and #box == 6 then
+		for _, x in ipairs(box) do
 			if type(x) ~= "number" then
 				return false
 			end
 		end
-		return true
+		return box[1] <= box[4] and box[2] <= box[5] and box[3] <= box[6]
 	end
 	return false
 end
 
-function futil.is_boxes(something)
-	if type(something) == "table" and #something > 0 then
-		for _, x in ipairs(something) do
-			if not futil.is_box(x) then
+function futil.is_boxes(boxes)
+	if type(boxes) == "table" and #boxes > 0 then
+		for _, box in ipairs(boxes) do
+			if not futil.is_box(box) then
 				return false
 			end
 		end
