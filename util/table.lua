@@ -152,6 +152,14 @@ end
 
 futil.table.swap = swap
 
+function futil.table.get(t, key, default)
+	local value = t[key]
+	if value == nil then
+		return default
+	end
+	return value
+end
+
 function futil.table.setdefault(t, key, default)
 	local value = t[key]
 	if value == nil then
