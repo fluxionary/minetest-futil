@@ -31,8 +31,29 @@ function Set:_init(t_or_i)
 	end
 end
 
+-- -DLUAJIT_ENABLE_LUA52COMPAT
 function Set:__len()
 	return self._size
+end
+
+function Set:len()
+	return self._size
+end
+
+function Set:size()
+	return self._size
+end
+
+function Set:is_empty()
+	return self._size == 0
+end
+
+function Set:__tostring()
+	local elements = {}
+	for element in pairs(self._set) do
+		elements[#elements + 1] = f("%q", element)
+	end
+	return f("Set({%s})", table.concat(elements, ", "))
 end
 
 function Set:__eq(other)
@@ -52,14 +73,14 @@ function Set:contains(element)
 end
 
 function Set:add(element)
-	if not self._set[element] then
+	if not self:contains(element) then
 		self._set[element] = true
 		self._size = self._size + 1
 	end
 end
 
 function Set:remove(element)
-	if not self._set[element] then
+	if not self:contains(element) then
 		error(f("set does not contain %s", element))
 	end
 	self._set[element] = nil
@@ -67,7 +88,7 @@ function Set:remove(element)
 end
 
 function Set:discard(element)
-	if self._set[element] then
+	if self:contains(element) then
 		self._set[element] = nil
 		self._size = self._size - 1
 	end
@@ -79,12 +100,7 @@ function Set:clear()
 end
 
 function Set:iterate()
-	local i = pairs(self._set)
-	local element
-	return function()
-		element = i(self._set, element)
-		return element
-	end
+	return futil.table.ikeys(self._set)
 end
 
 function Set:isdisjoint(other)
