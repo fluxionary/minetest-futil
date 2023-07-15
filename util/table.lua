@@ -122,6 +122,14 @@ function futil.table.keys(t)
 	return keys
 end
 
+function futil.table.ikeys(t)
+	local key
+	return function()
+		key = next(t, key)
+		return key
+	end
+end
+
 function futil.table.values(t)
 	local values = {}
 	for _, value in pairs(t) do
