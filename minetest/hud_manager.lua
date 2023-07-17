@@ -16,6 +16,7 @@ function ManagedHud:_init(hud_name, def)
 
 	self._name_field = def.name_field or "name"
 	self._period = def.period
+	self._get_hud_data = def.get_hud_data
 	self._get_hud_def = def.get_hud_def
 	self._enabled_by_default = def.enabled_by_default
 
@@ -55,7 +56,7 @@ function ManagedHud:toggle_enabled(player)
 	return enabled
 end
 
-function ManagedHud:update(player)
+function ManagedHud:update(player, data)
 	local is_enabled = self:is_enabled(player)
 	local player_name = player:get_player_name()
 	local hud_id = self._hud_id_by_player_name[player_name]
@@ -76,7 +77,7 @@ function ManagedHud:update(player)
 	end
 
 	if is_enabled then
-		local new_hud_def = self._get_hud_def(player)
+		local new_hud_def = self._get_hud_def(player, data)
 		if not new_hud_def then
 			if hud_id then
 				player:hud_remove(hud_id)
@@ -115,7 +116,10 @@ end
 
 local elapsed_by_hud_name = {}
 minetest.register_globalstep(function(dtime)
-	local players
+	local players = minetest.get_connected_players()
+	if #players == 0 then
+		return
+	end
 	for hud_name, hud in pairs(futil.defined_huds) do
 		if hud._period then
 			local elapsed = (elapsed_by_hud_name[hud_name] or 0) + dtime
@@ -123,9 +127,12 @@ minetest.register_globalstep(function(dtime)
 				elapsed_by_hud_name[hud_name] = elapsed
 			else
 				elapsed_by_hud_name[hud_name] = 0
-				players = players or minetest.get_connected_players()
+				local data
+				if hud._get_hud_data then
+					data = hud._get_hud_data()
+				end
 				for i = 1, #players do
-					hud:update(players[i])
+					hud:update(players[i], data)
 				end
 			end
 		end
