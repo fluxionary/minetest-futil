@@ -1,3 +1,5 @@
+-- based more-or-less on python's set
+
 local f = string.format
 
 local Set = futil.class1()
@@ -23,10 +25,12 @@ function Set:_init(t_or_i)
 			for i = 1, #t_or_i do
 				self:add(t_or_i[i])
 			end
-		else
+		elseif type(t_or_i) == "function" or getmetatable(t_or_i).__call then
 			for v in t_or_i do
 				self:add(v)
 			end
+		else
+			error(f("unknown argument of type %s", type(t_or_i)))
 		end
 	end
 end
@@ -105,7 +109,7 @@ end
 
 function Set:isdisjoint(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	for element in self:iterate() do
 		if other:contains(element) then
@@ -117,7 +121,7 @@ end
 
 function Set:issubset(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	if #self > #other then
 		return false
@@ -136,7 +140,7 @@ end
 
 function Set:__lt(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	if #self >= #other then
 		return false
@@ -151,14 +155,14 @@ end
 
 function Set:issuperset(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	return other:issubset(self)
 end
 
 function Set:update(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	for element in other:iterate() do
 		self:add(element)
@@ -167,7 +171,7 @@ end
 
 function Set:union(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	local union = Set(self)
 	union:update(other)
@@ -180,7 +184,7 @@ end
 
 function Set:intersection_update(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	for element in self:iterate() do
 		if not other:contains(element) then
@@ -191,7 +195,7 @@ end
 
 function Set:intersection(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	local intersection = Set()
 	for element in self:iterate() do
@@ -204,7 +208,7 @@ end
 
 function Set:difference_update(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	for element in other:iterate() do
 		self:discard(element)
@@ -213,7 +217,7 @@ end
 
 function Set:difference(other)
 	if not is_a_set(other) then
-		error("other is not a set")
+		other = Set(other)
 	end
 	local difference = Set(self)
 	difference:difference_update(other)
