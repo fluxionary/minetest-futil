@@ -35,6 +35,14 @@ function Set:_init(t_or_i)
 	end
 end
 
+-- turn a table like {foo=true, bar=true} into a Set
+function Set.convert(t)
+	local set = Set()
+	set._set = t
+	set._size = futil.table.size(t)
+	return set
+end
+
 -- -DLUAJIT_ENABLE_LUA52COMPAT
 function Set:__len()
 	return self._size
