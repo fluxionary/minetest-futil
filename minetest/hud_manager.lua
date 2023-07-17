@@ -41,7 +41,7 @@ function ManagedHud:set_enabled(player, value)
 	if minetest.is_yes(value) then
 		meta:set_string(self._hud_enabled_key, "y")
 	else
-		meta:set_string(self._hud_enabled_key, "")
+		meta:set_string(self._hud_enabled_key, "n")
 	end
 end
 
@@ -51,7 +51,7 @@ function ManagedHud:toggle_enabled(player)
 	if enabled then
 		meta:set_string(self._hud_enabled_key, "y")
 	else
-		meta:set_string(self._hud_enabled_key, "")
+		meta:set_string(self._hud_enabled_key, "n")
 	end
 	return enabled
 end
@@ -129,7 +129,16 @@ minetest.register_globalstep(function(dtime)
 				elapsed_by_hud_name[hud_name] = 0
 				local data
 				if hud._get_hud_data then
-					data = hud._get_hud_data()
+					local is_any_enabled = false
+					for i = 1, #players do
+						if hud:is_enabled(players[i]) then
+							is_any_enabled = true
+							break
+						end
+					end
+					if is_any_enabled then
+						data = hud._get_hud_data()
+					end
 				end
 				for i = 1, #players do
 					hud:update(players[i], data)
