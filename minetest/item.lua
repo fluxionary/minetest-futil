@@ -66,7 +66,7 @@ function futil.get_primary_drop(stack)
 		local rarity = tonumber("inf")
 
 		if not drop.items then
-			error(f("unexpected drop table: %s", dump(drop)))
+			error(f("unexpected drop table for %s: %s", stack:to_string(), dump(drop)))
 		end
 
 		for _, item in ipairs(drop.items) do
