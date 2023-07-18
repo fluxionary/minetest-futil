@@ -68,6 +68,10 @@ end
 
 futil.get_block_bounds = futil.vector.get_block_bounds
 
+function futil.vector.get_block_center(blockpos)
+	return v_add(futil.vector.get_block_min(blockpos), 8) -- 8 = 16 / 2
+end
+
 function futil.vector.get_chunkpos(pos)
 	return v_new(
 		m_floor((pos.x - map_min_i) / chunksize_nodes),
