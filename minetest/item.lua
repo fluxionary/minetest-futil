@@ -65,6 +65,10 @@ function futil.get_primary_drop(stack)
 		local most_common_item
 		local rarity = tonumber("inf")
 
+		if not drop.items then
+			error(f("unexpected drop table: %s", dump(drop)))
+		end
+
 		for _, item in ipairs(drop.items) do
 			if not (item.tools or item.tool_groups) then
 				if (item.rarity or 1) < rarity then
