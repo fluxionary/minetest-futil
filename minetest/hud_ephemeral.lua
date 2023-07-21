@@ -79,3 +79,11 @@ function EphemeralHud:remove()
 end
 
 futil.EphemeralHud = EphemeralHud
+
+function futil.create_ephemeral_hud(player, timeout, hud_def)
+	local hud = EphemeralHud(player, hud_def)
+	minetest.after(timeout, function()
+		hud:remove()
+	end)
+	return hud
+end
