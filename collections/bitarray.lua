@@ -121,3 +121,5 @@ function BitArray.deserialize(s)
 	end
 	return ba
 end
+
+futil.BitArray = BitArray
