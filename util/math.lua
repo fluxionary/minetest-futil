@@ -85,3 +85,7 @@ end
 function futil.math.rad2deg(rad)
 	return rad * 180 / math.pi
 end
+
+function futil.math.do_intervals_overlap(min1, max1, min2, max2)
+	return min1 <= max2 and min2 <= max1
+end
