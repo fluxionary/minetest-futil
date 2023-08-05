@@ -53,7 +53,7 @@ function futil.register_globalstep(def)
 			end)
 		elseif def.catchup == "single" or def.catchup == true then
 			assert(
-				def.period > dedicated_server_step,
+				def.period >= dedicated_server_step,
 				f(
 					"if period (%s) is less than dedicated_server_step (%s), single catchup will never fully catch up.",
 					def.period,
