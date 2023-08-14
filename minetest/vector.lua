@@ -1,9 +1,11 @@
+local m_abs = math.abs
 local m_acos = math.acos
 local m_cos = math.cos
 local m_floor = math.floor
 local m_min = math.min
 local m_max = math.max
 local m_pi = math.pi
+local m_pow = math.pow
 local m_random = math.random
 local m_sin = math.sin
 
@@ -248,7 +250,7 @@ function futil.can_see_sky(pos, distance, trials, max_hits)
 	local num_hits = 0
 	for _ = 1, trials do
 		local ruv = futil.random_unit_vector()
-		ruv.y = math.abs(ruv.y) -- look up, not at the ground
+		ruv.y = m_abs(ruv.y) -- look up, not at the ground
 		local target = pos + (distance * ruv)
 		local hit = Raycast(pos, target, false, false)()
 		if hit then
@@ -271,4 +273,15 @@ end
 
 function futil.vector.hash(pos)
 	return string.format("%a%a%a", pos.x, pos.y, pos.z)
+end
+
+function futil.vector.ldistance(pos1, pos2, p)
+	if p == math.huge then
+		return m_max(m_abs(pos1.x - pos2.x), m_abs(pos1.y - pos2.y), m_abs(pos1.z - pos2.z))
+	else
+		return m_pow(
+			m_pow(m_abs(pos1.x - pos2.x), p) + m_pow(m_abs(pos1.y - pos2.y), p) + m_pow(m_abs(pos1.z - pos2.z), p),
+			1 / p
+		)
+	end
 end
