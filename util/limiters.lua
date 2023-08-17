@@ -33,3 +33,10 @@ futil.limiters = {
 		return (log(x + 1) * pow(log(param_1 * x + 1), param_2) / (log(2) * pow(log(param_1 + 1), param_2)))
 	end,
 }
+
+function futil.create_limiter(name, param_1, param_2)
+	local f = futil.limiters[name]
+	return function(x)
+		return f(x, param_1, param_2)
+	end
+end
