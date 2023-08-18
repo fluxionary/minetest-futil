@@ -4,7 +4,6 @@ futil.dofile("util", "coalesce")
 futil.dofile("util", "exception")
 futil.dofile("util", "file")
 futil.dofile("util", "http")
-futil.dofile("util", "limiters")
 futil.dofile("util", "list")
 futil.dofile("util", "math")
 futil.dofile("util", "memoization")
@@ -21,3 +20,4 @@ futil.dofile("util", "random") -- depends on math
 futil.dofile("util", "regex") -- depends on exception
 futil.dofile("util", "selection") -- depends on table, math
 futil.dofile("util", "time") -- depends on math
+futil.dofile("util", "limiters") -- depends on functional
