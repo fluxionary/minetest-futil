@@ -70,6 +70,43 @@ function futil.math.isum(i, initial)
 	return sum
 end
 
+function futil.math.product(t, initial)
+	local product
+	local start
+	if initial then
+		product = initial
+		start = 1
+	else
+		product = t[1]
+		start = 2
+	end
+
+	for i = start, #t do
+		product = product * t[i]
+	end
+
+	return product
+end
+
+function futil.math.iproduct(i, initial)
+	local product
+
+	if initial == nil then
+		product = i()
+	else
+		product = initial
+	end
+
+	local v = i()
+
+	while v do
+		product = product * v
+		v = i()
+	end
+
+	return product
+end
+
 function futil.math.probabilistic_round(v)
 	return math.floor(v + math.random())
 end
