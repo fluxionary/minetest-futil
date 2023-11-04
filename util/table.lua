@@ -176,3 +176,7 @@ function futil.table.setdefault(t, key, default)
 	end
 	return value
 end
+
+function futil.table.pack(...)
+	return { n = select("#", ...), ... }
+end

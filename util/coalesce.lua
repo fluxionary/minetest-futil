@@ -1,6 +1,6 @@
 function futil.coalesce(...)
-	local arg = { ... }
-	for i = 1, #arg do
+	local arg = futil.table.pack(...)
+	for i = 1, arg.n do
 		local v = arg[i]
 		if v ~= nil then
 			return v
