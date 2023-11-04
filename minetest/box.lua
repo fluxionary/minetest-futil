@@ -50,13 +50,137 @@ function futil.is_box(box)
 end
 
 function futil.is_boxes(boxes)
-	if type(boxes) == "table" and #boxes > 0 then
-		for _, box in ipairs(boxes) do
-			if not futil.is_box(box) then
-				return false
-			end
-		end
-		return true
+	if type(boxes) ~= "table" or #boxes == 0 then
+		return false
 	end
-	return false
+
+	for _, box in ipairs(boxes) do
+		if not futil.is_box(box) then
+			return false
+		end
+	end
+
+	return true
+end
+
+-- given a set of boxes, return a single box that covers all of them
+function futil.cover_boxes(boxes)
+	if not futil.is_boxes(boxes) then
+		return { 0, 0, 0, 0, 0, 0 }
+	end
+
+	local cover = boxes[1]
+	for i = 2, #boxes do
+		for j = 1, 3 do
+			cover[j] = math.min(cover[j], boxes[i][j])
+		end
+		for j = 4, 6 do
+			cover[j] = math.max(cover[j], boxes[i][j])
+		end
+	end
+
+	return cover
+end
+
+--[[
+for nodes:
+	A nodebox is defined as any of:
+
+	{
+		-- A normal cube; the default in most things
+		type = "regular"
+	}
+	{
+		-- A fixed box (or boxes) (facedir param2 is used, if applicable)
+		type = "fixed",
+		fixed = box OR {box1, box2, ...}
+	}
+	{
+		-- A variable height box (or boxes) with the top face position defined
+		-- by the node parameter 'leveled = ', or if 'paramtype2 == "leveled"'
+		-- by param2.
+		-- Other faces are defined by 'fixed = {}' as with 'type = "fixed"'.
+		type = "leveled",
+		fixed = box OR {box1, box2, ...}
+	}
+	{
+		-- A box like the selection box for torches
+		-- (wallmounted param2 is used, if applicable)
+		type = "wallmounted",
+		wall_top = box,
+		wall_bottom = box,
+		wall_side = box
+	}
+	{
+		-- A node that has optional boxes depending on neighboring nodes'
+		-- presence and type. See also `connects_to`.
+		type = "connected",
+		fixed = box OR {box1, box2, ...}
+		connect_top = box OR {box1, box2, ...}
+		connect_bottom = box OR {box1, box2, ...}
+		connect_front = box OR {box1, box2, ...}
+		connect_left = box OR {box1, box2, ...}
+		connect_back = box OR {box1, box2, ...}
+		connect_right = box OR {box1, box2, ...}
+		-- The following `disconnected_*` boxes are the opposites of the
+		-- `connect_*` ones above, i.e. when a node has no suitable neighbor
+		-- on the respective side, the corresponding disconnected box is drawn.
+		disconnected_top = box OR {box1, box2, ...}
+		disconnected_bottom = box OR {box1, box2, ...}
+		disconnected_front = box OR {box1, box2, ...}
+		disconnected_left = box OR {box1, box2, ...}
+		disconnected_back = box OR {box1, box2, ...}
+		disconnected_right = box OR {box1, box2, ...}
+		disconnected = box OR {box1, box2, ...} -- when there is *no* neighbor
+		disconnected_sides = box OR {box1, box2, ...} -- when there are *no*
+													  -- neighbors to the sides
+	}
+
+for objects:
+	collisionbox = { -0.5, -0.5, -0.5, 0.5, 0.5, 0.5 },  -- default
+	selectionbox = { -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, rotate = false },
+	-- { xmin, ymin, zmin, xmax, ymax, zmax } in nodes from object position.
+	-- Collision boxes cannot rotate, setting `rotate = true` on it has no effect.
+	-- If not set, the selection box copies the collision box, and will also not rotate.
+	-- If `rotate = false`, the selection box will not rotate with the object itself, remaining fixed to the axes.
+	-- If `rotate = true`, it will match the object's rotation and any attachment rotations.
+	-- Raycasts use the selection box and object's rotation, but do *not* obey attachment rotations
+]]
+
+futil.default_collision_box = { -0.5, -0.5, -0.5, 0.5, 0.5, 0.5 }
+
+function futil.node_collision_box_to_object_collisionbox(collision_box)
+	if type(collision_box) ~= "table" then
+		return table.copy(futil.default_collision_box)
+	elseif collision_box.type == "regular" then
+		return table.copy(futil.default_collision_box)
+	elseif collision_box.type == "fixed" or collision_box.type == "leveled" or collision_box.type == "connected" then
+		if futil.is_box(collision_box.fixed) then
+			return collision_box.fixed
+		elseif futil.is_boxes(collision_box.fixed) then
+			return futil.cover_boxes(collision_box.fixed)
+		else
+			return table.copy(futil.default_collision_box)
+		end
+	elseif collision_box.type == "wallmounted" then
+		local boxes = {}
+		if collision_box.wall_top then
+			table.insert(boxes, collision_box.wall_top)
+		end
+		if collision_box.wall_bottom then
+			table.insert(boxes, collision_box.wall_bottom)
+		end
+		if collision_box.wall_side then
+			table.insert(boxes, collision_box.wall_side)
+		end
+		return futil.cover_boxes(boxes)
+	else
+		return table.copy(futil.default_collision_box)
+	end
+end
+
+function futil.node_selection_box_to_object_selectionbox(selection_box, rotate)
+	local selectionbox = futil.node_collision_box_to_object_collisionbox(selection_box)
+	selectionbox.rotate = rotate or false
+	return selectionbox
 end
