@@ -46,36 +46,48 @@ else
 	end
 end
 
+-- TODO: probably this should have a 2nd argument to handle tool and tool_group stuff
 function futil.get_primary_drop(stack)
-	if type(stack) == "string" then
-		stack = ItemStack(stack)
-	end
+	stack = ItemStack(stack)
 
 	local name = stack:get_name()
+	local meta = stack:get_meta()
+	local palette_index = tonumber(meta:get_int("palette_index"))
 	local def = stack:get_definition()
 	local drop = def.drop
 
 	if drop == nil then
-		return name
+		stack:set_count(1)
+		return stack
 	elseif drop == "" then
 		return nil
 	elseif type(drop) == "string" then
+		drop = ItemStack(drop)
+		drop:set_count(1)
 		return drop
 	elseif type(drop) == "table" then
 		local most_common_item
-		local rarity = tonumber("inf")
+		local inherit_color = false
+		local rarity = math.huge
 
 		if not drop.items then
 			error(f("unexpected drop table for %s: %s", stack:to_string(), dump(drop)))
 		end
 
 		for _, item in ipairs(drop.items) do
-			if not (item.tools or item.tool_groups) then
-				if (item.rarity or 1) < rarity then
-					most_common_item = item.items[1]
-					rarity = item.rarity
-				end
+			if (item.rarity or 1) < rarity then
+				most_common_item = item.items[1]
+				inherit_color = item.inherit_color or false
+				rarity = item.rarity
 			end
+		end
+
+		most_common_item = ItemStack(most_common_item)
+		most_common_item:set_count(1)
+
+		if inherit_color and palette_index then
+			local meta2 = most_common_item:get_meta()
+			meta2:set_int("palette_index", palette_index)
 		end
 
 		return most_common_item
