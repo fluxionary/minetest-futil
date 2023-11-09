@@ -46,15 +46,14 @@ else
 	end
 end
 
--- TODO: probably this should have a 2nd argument to handle tool and tool_group stuff
-function futil.get_primary_drop(stack)
+-- TODO: probably this should have a 3nd argument to handle tool and tool_group stuff
+function futil.get_primary_drop(stack, filter)
 	stack = ItemStack(stack)
 
 	local name = stack:get_name()
 	local meta = stack:get_meta()
 	local palette_index = tonumber(meta:get_int("palette_index"))
 	local def = stack:get_definition()
-	local drop = def.drop
 
 	if palette_index then
 		-- https://github.com/mt-mods/unifieddyes/blob/36c8bb5f5b8a0485225d2547c8978291ff710291/api.lua#L70-L90
@@ -82,6 +81,8 @@ function futil.get_primary_drop(stack)
 		end
 	end
 
+	local drop = def.drop
+
 	if drop == nil then
 		stack:set_count(1)
 		return stack
@@ -100,12 +101,21 @@ function futil.get_primary_drop(stack)
 			error(f("unexpected drop table for %s: %s", stack:to_string(), dump(drop)))
 		end
 
-		for _, item in ipairs(drop.items) do
-			if (item.rarity or 1) < rarity then
-				most_common_item = item.items[1]
-				inherit_color = item.inherit_color or false
-				rarity = item.rarity
+		for _, items in ipairs(drop.items) do
+			if (items.rarity or 1) < rarity then
+				for item in ipairs(items.items) do
+					if (not filter) or filter(item) then
+						most_common_item = item
+						inherit_color = items.inherit_color or false
+						rarity = items.rarity
+						break
+					end
+				end
 			end
+		end
+
+		if not most_common_item then
+			return
 		end
 
 		most_common_item = ItemStack(most_common_item)
