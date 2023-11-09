@@ -56,6 +56,32 @@ function futil.get_primary_drop(stack)
 	local def = stack:get_definition()
 	local drop = def.drop
 
+	if palette_index then
+		-- https://github.com/mt-mods/unifieddyes/blob/36c8bb5f5b8a0485225d2547c8978291ff710291/api.lua#L70-L90
+		local del_color
+
+		if def.paramtype2 == "color" and palette_index == 240 and def.palette == "unifieddyes_palette_extended.png" then
+			del_color = true
+		elseif
+			def.paramtype2 == "colorwallmounted"
+			and palette_index == 0
+			and def.palette == "unifieddyes_palette_colorwallmounted.png"
+		then
+			del_color = true
+		elseif
+			def.paramtype2 == "colorfacedir"
+			and palette_index == 0
+			and string.find(def.palette, "unifieddyes_palette_")
+		then
+			del_color = true
+		end
+
+		if del_color then
+			meta:set_string("palette_index", "")
+			palette_index = nil
+		end
+	end
+
 	if drop == nil then
 		stack:set_count(1)
 		return stack
