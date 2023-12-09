@@ -115,12 +115,40 @@ function Set:iterate()
 	return futil.table.ikeys(self._set)
 end
 
+function Set:intersects(other)
+	if not is_a_set(other) then
+		other = Set(other)
+	end
+	local smaller, bigger
+	if other:size() < self:size() then
+		smaller = other
+		bigger = self
+	else
+		smaller = self
+		bigger = other
+	end
+	for element in smaller:iterate() do
+		if bigger:contains(element) then
+			return true
+		end
+	end
+	return false
+end
+
 function Set:isdisjoint(other)
 	if not is_a_set(other) then
 		other = Set(other)
 	end
-	for element in self:iterate() do
-		if other:contains(element) then
+	local smaller, bigger
+	if other:size() < self:size() then
+		smaller = other
+		bigger = self
+	else
+		smaller = self
+		bigger = other
+	end
+	for element in smaller:iterate() do
+		if bigger:contains(element) then
 			return false
 		end
 	end
@@ -131,7 +159,7 @@ function Set:issubset(other)
 	if not is_a_set(other) then
 		other = Set(other)
 	end
-	if #self > #other then
+	if self:size() > other:size() then
 		return false
 	end
 	for element in self:iterate() do
@@ -150,7 +178,7 @@ function Set:__lt(other)
 	if not is_a_set(other) then
 		other = Set(other)
 	end
-	if #self >= #other then
+	if self:size() >= other:size() then
 		return false
 	end
 	for element in self:iterate() do

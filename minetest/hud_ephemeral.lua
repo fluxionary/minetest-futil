@@ -83,7 +83,9 @@ futil.EphemeralHud = EphemeralHud
 function futil.create_ephemeral_hud(player, timeout, hud_def)
 	local hud = EphemeralHud(player, hud_def)
 	minetest.after(timeout, function()
-		hud:remove()
+		if hud:is_active() then
+			hud:remove()
+		end
 	end)
 	return hud
 end
