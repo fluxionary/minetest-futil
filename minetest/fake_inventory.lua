@@ -260,4 +260,11 @@ function FakeInventory:contains_item(listname, stack, match_meta)
 	end
 end
 
+function FakeInventory:get_location()
+	return {
+		type = "undefined",
+		subtype = "FakeInventory",
+	}
+end
+
 futil.FakeInventory = FakeInventory
