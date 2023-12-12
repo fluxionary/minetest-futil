@@ -16,7 +16,7 @@ function futil.serialize(x)
 		end
 		return f("{%s}", table.concat(parts, ", "))
 	else
-		error(f("can't serialize type %s", x))
+		error(f("can't serialize type %s", type(x)))
 	end
 end
 
