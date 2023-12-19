@@ -2,7 +2,7 @@
 -- https://www.cs.cmu.edu/~sleator/papers/pairing-heaps.pdf
 -- https://www.cise.ufl.edu/~sahni/dsaaj/enrich/c13/pairing.htm
 
-local inf = tonumber("inf")
+local inf = math.huge
 
 local function add_child(node1, node2)
 	node2.parent = node1
