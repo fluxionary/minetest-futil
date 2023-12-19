@@ -33,12 +33,8 @@ local sort = table.sort
 
 local in_area = vector.in_area
 	or function(pos, pmin, pmax)
-		return pmin.x <= pos.x
-			and pos.x <= pmax.x
-			and pmin.y <= pos.y
-			and pos.y <= pmax.y
-			and pmin.z <= pos.z
-			and pos.z <= pmax.z
+		local x, y, z = pos.x, pos.y, pos.z
+		return pmin.x <= x and x <= pmax.x and pmin.y <= y and y <= pmax.y and pmin.z <= z and z <= pmax.z
 	end
 
 local axes = { "x", "y", "z" }
