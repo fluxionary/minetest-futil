@@ -227,6 +227,16 @@ function futil.random_unit_vector()
 	return v_new(m_cos(lambda) * m_cos(phi), m_cos(lambda) * m_sin(phi), m_sin(lambda))
 end
 
+---- https://math.stackexchange.com/a/205589
+--function futil.random_unit_vector_in_solid_angle(theta, direction)
+--	local z = m_random() * (1 - m_cos(theta)) - 1
+--	local phi = m_random() * 2 * m_pi
+--	local z2 = (1 - z*z) ^ 0.5
+--	local ruv = v_new(z2 * m_cos(phi), z2 * m_sin(phi), z)
+--	direction = direction:normalize()
+--  ...
+--end
+
 function futil.is_indoors(pos, distance, trials, hits_needed)
 	distance = distance or 20
 	trials = trials or 11
@@ -238,9 +248,12 @@ function futil.is_indoors(pos, distance, trials, hits_needed)
 		local hit = Raycast(pos, target, false, false)()
 		if hit then
 			num_hits = num_hits + 1
+			if num_hits == hits_needed then
+				return true
+			end
 		end
 	end
-	return num_hits >= hits_needed
+	return false
 end
 
 function futil.can_see_sky(pos, distance, trials, max_hits)
@@ -255,10 +268,12 @@ function futil.can_see_sky(pos, distance, trials, max_hits)
 		local hit = Raycast(pos, target, false, false)()
 		if hit then
 			num_hits = num_hits + 1
+			if num_hits > max_hits then
+				return false
+			end
 		end
 	end
-	print(trials, num_hits)
-	return num_hits <= max_hits
+	return true
 end
 
 function futil.vector.is_valid_position(pos)
