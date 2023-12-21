@@ -1,5 +1,15 @@
-function futil.get_horizontal_speed(player)
-	local velocity = player:get_velocity()
+-- if object is attached, get the velocity of the object it is attached to
+function futil.get_velocity(object)
+	local parent = object:get_attach()
+	while parent do
+		object = parent
+		parent = object:get_attach()
+	end
+	return object:get_velocity()
+end
+
+function futil.get_horizontal_speed(object)
+	local velocity = futil.get_velocity(object)
 	velocity.y = 0
 	return vector.length(velocity)
 end
@@ -149,18 +159,3 @@ function futil.is_on_ground(player)
 
 	return false
 end
-
---local elapsed = 0
---minetest.register_globalstep(function(dtime)
---	elapsed = elapsed + dtime
---	if elapsed < 1 then
---		return
---	end
---	elapsed = 0
---	for _, player in ipairs(minetest.get_connected_players()) do
---		minetest.chat_send_player(
---			player:get_player_name(),
---			string.format("is_on_ground = %s", futil.is_on_ground(player))
---		)
---	end
---end)

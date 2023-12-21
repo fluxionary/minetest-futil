@@ -300,3 +300,8 @@ function futil.vector.ldistance(pos1, pos2, p)
 		)
 	end
 end
+
+function futil.vector.round(pos, mult)
+	local round = futil.math.round
+	return v_new(round(pos.x, mult), round(pos.y, mult), round(pos.z, mult))
+end

@@ -126,3 +126,31 @@ end
 function futil.math.do_intervals_overlap(min1, max1, min2, max2)
 	return min1 <= max2 and min2 <= max1
 end
+
+-- i took one class from kahan and can't stop doing this
+local function round(n)
+	local d = n % 1
+	local i = n - d
+
+	if i % 2 == 0 then
+		if d <= 0.5 then
+			return i
+		else
+			return i + 1
+		end
+	else
+		if d < 0.5 then
+			return i
+		else
+			return i + 1
+		end
+	end
+end
+
+function futil.math.round(number, mult)
+	if mult then
+		return round(number / mult) * mult
+	else
+		return round(number)
+	end
+end
