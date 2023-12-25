@@ -344,10 +344,10 @@ function futil.vector.rotation_to_matrix(rotation)
 	return futil.matrix.multiply(futil.matrix.multiply(yaw, pitch), roll)
 end
 
--- https://msl.cs.uiuc.edu/planning/node102.html
+-- https://msl.cs.uiuc.edu/planning/node103.html
 function futil.vector.matrix_to_rotation(matrix)
 	local pitch = m_atan2(matrix[2][1], matrix[1][1])
-	local yaw = m_asin(matrix[3][1])
+	local yaw = m_asin(-matrix[3][1])
 	local roll = m_atan2(matrix[3][2], matrix[3][3])
 	return v_new(pitch, yaw, roll)
 end
