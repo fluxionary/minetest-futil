@@ -288,8 +288,18 @@ function futil.vector.is_valid_position(pos)
 	end
 end
 
+-- minetest.hash_node_position only works with integer coordinates
 function futil.vector.hash(pos)
-	return string.format("%a%a%a", pos.x, pos.y, pos.z)
+	return string.format("%a:%a:%a", pos.x, pos.y, pos.z)
+end
+
+function futil.vector.unhash(string)
+	local x, y, z = string:match("^([^:]+):([^:]+):([^:]+)$")
+	x, y, z = tonumber(x), tonumber(y), tonumber(z)
+	if not (x and y and z) then
+		return
+	end
+	return v_new(x, y, z)
 end
 
 function futil.vector.ldistance(pos1, pos2, p)
@@ -308,7 +318,7 @@ function futil.vector.round(pos, mult)
 	return v_new(round(pos.x, mult), round(pos.y, mult), round(pos.z, mult))
 end
 
--- https://www.physicsforums.com/threads/combine-two-pitch-yaw-roll-rotations.673988/
+-- https://msl.cs.uiuc.edu/planning/node102.html
 function futil.vector.rotation_to_matrix(rotation)
 	local cosp = m_cos(rotation.x)
 	local sinp = m_sin(rotation.x)
@@ -334,11 +344,11 @@ function futil.vector.rotation_to_matrix(rotation)
 	return futil.matrix.multiply(futil.matrix.multiply(yaw, pitch), roll)
 end
 
--- https://www.physicsforums.com/threads/combine-two-pitch-yaw-roll-rotations.673988/
+-- https://msl.cs.uiuc.edu/planning/node102.html
 function futil.vector.matrix_to_rotation(matrix)
-	local pitch = m_atan2(-matrix[3][1], matrix[1][1])
-	local yaw = m_asin(matrix[2][1])
-	local roll = m_atan2(-matrix[2][3], matrix[2][2])
+	local pitch = m_atan2(matrix[2][1], matrix[1][1])
+	local yaw = m_asin(matrix[3][1])
+	local roll = m_atan2(matrix[3][2], matrix[3][3])
 	return v_new(pitch, yaw, roll)
 end
 
