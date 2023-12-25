@@ -1,5 +1,7 @@
 local m_abs = math.abs
 local m_acos = math.acos
+local m_asin = math.asin
+local m_atan2 = math.atan2
 local m_cos = math.cos
 local m_floor = math.floor
 local m_min = math.min
@@ -304,4 +306,51 @@ end
 function futil.vector.round(pos, mult)
 	local round = futil.math.round
 	return v_new(round(pos.x, mult), round(pos.y, mult), round(pos.z, mult))
+end
+
+-- https://www.physicsforums.com/threads/combine-two-pitch-yaw-roll-rotations.673988/
+function futil.vector.rotation_to_matrix(rotation)
+	local cosp = m_cos(rotation.x)
+	local sinp = m_sin(rotation.x)
+	local pitch = {
+		{ cosp, 0, sinp },
+		{ 0, 1, 0 },
+		{ -sinp, 0, cosp },
+	}
+	local cosy = m_cos(rotation.y)
+	local siny = m_sin(rotation.y)
+	local yaw = {
+		{ cosy, -siny, 0 },
+		{ siny, cosy, 0 },
+		{ 0, 0, 1 },
+	}
+	local cosr = m_cos(rotation.z)
+	local sinr = m_sin(rotation.z)
+	local roll = {
+		{ 1, 0, 0 },
+		{ 0, cosr, -sinr },
+		{ 0, sinr, cosr },
+	}
+	return futil.matrix.multiply(futil.matrix.multiply(pitch, yaw), roll)
+end
+
+-- https://www.physicsforums.com/threads/combine-two-pitch-yaw-roll-rotations.673988/
+function futil.vector.matrix_to_rotation(matrix)
+	local pitch = m_atan2(-matrix[3][1], matrix[1][1])
+	local yaw = m_asin(matrix[2][1])
+	local roll = m_atan2(-matrix[2][3], matrix[2][2])
+	return v_new(pitch, yaw, roll)
+end
+
+function futil.vector.inverse_rotation(rot)
+	-- since the determinant of a rotation matrix is 1, the inverse is just the transpose and i don't have to write
+	-- a matrix inverter
+	return futil.vector.matrix_to_rotation(futil.matrix.transpose(futil.vector.rotation_to_matrix(rot)))
+end
+
+-- assumed in radians
+function futil.vector.compose_rotations(rot1, rot2)
+	local m1 = futil.vector.rotation_to_matrix(rot1)
+	local m2 = futil.vector.rotation_to_matrix(rot2)
+	return futil.vector.matrix_to_rotation(futil.matrix.multiply(m1, m2))
 end

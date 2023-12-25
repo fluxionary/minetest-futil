@@ -1,3 +1,5 @@
+local v_new = vector.new
+
 -- if object is attached, get the velocity of the object it is attached to
 function futil.get_velocity(object)
 	local parent = object:get_attach()
@@ -145,10 +147,10 @@ function futil.is_on_ground(player)
 
 	-- collect the positions of the nodes below the player's feet
 	local feet_poss = {
-		vector.new(math.round(p_pos.x + cb[1]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[3])),
-		vector.new(math.round(p_pos.x + cb[1]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[6])),
-		vector.new(math.round(p_pos.x + cb[4]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[3])),
-		vector.new(math.round(p_pos.x + cb[4]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[6])),
+		v_new(math.round(p_pos.x + cb[1]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[3])),
+		v_new(math.round(p_pos.x + cb[1]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[6])),
+		v_new(math.round(p_pos.x + cb[4]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[3])),
+		v_new(math.round(p_pos.x + cb[4]), math.ceil(p_pos.y + cb[2] - 0.5), math.round(p_pos.z + cb[6])),
 	}
 
 	for _, feet_pos in ipairs(feet_poss) do
@@ -158,4 +160,10 @@ function futil.is_on_ground(player)
 	end
 
 	return false
+end
+
+function futil.get_object_center(object)
+	local pos = object:get_pos()
+	local cb = object:get_properties().collisionbox
+	return v_new(pos.x + (cb[1] + cb[4]) / 2, pos.y + (cb[2] + cb[5]) / 2, pos.z + (cb[3] + cb[6]) / 2)
 end
