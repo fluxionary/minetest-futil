@@ -331,7 +331,7 @@ function futil.vector.rotation_to_matrix(rotation)
 		{ 0, cosr, -sinr },
 		{ 0, sinr, cosr },
 	}
-	return futil.matrix.multiply(futil.matrix.multiply(pitch, yaw), roll)
+	return futil.matrix.multiply(futil.matrix.multiply(yaw, pitch), roll)
 end
 
 -- https://www.physicsforums.com/threads/combine-two-pitch-yaw-roll-rotations.673988/
