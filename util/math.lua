@@ -108,20 +108,16 @@ function futil.math.iproduct(i, initial)
 end
 
 function futil.math.probabilistic_round(v)
-	return math.floor(v + math.random())
+	return floor(v + math.random())
 end
 
 function futil.math.cmp(a, b)
 	return a < b
 end
 
-function futil.math.deg2rad(deg)
-	return deg * math.pi / 180
-end
+futil.math.deg2rad = math.deg
 
-function futil.math.rad2deg(rad)
-	return rad * 180 / math.pi
-end
+futil.math.rad2deg = math.rad
 
 function futil.math.do_intervals_overlap(min1, max1, min2, max2)
 	return min1 <= max2 and min2 <= max1
