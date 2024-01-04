@@ -90,7 +90,7 @@ function ManagedHud:update(player, data)
 
 		if old_hud_def then
 			for k, v in pairs(new_hud_def) do
-				if old_hud_def[k] ~= v and k ~= "hud_elem_type" then
+				if old_hud_def[k] ~= v and k ~= "type" and k ~= "hud_elem_type" then
 					player:hud_change(hud_id, k, v)
 				end
 			end

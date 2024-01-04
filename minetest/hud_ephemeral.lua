@@ -11,7 +11,7 @@ local EphemeralHud = futil.class1()
 
 function EphemeralHud:_init(player, hud_def)
 	self._player_name = player:get_player_name()
-	if hud_def.hud_elem_type == "waypoint" then
+	if (hud_def.type or hud_def.hud_elem_type) == "waypoint" then
 		self._id_field = "text2"
 	else
 		self._id_field = "name"
@@ -52,8 +52,12 @@ function EphemeralHud:change(new_hud_def)
 	local old_hud_def = player:hud_get(self._hud_id)
 	for key, value in pairs(new_hud_def) do
 		if key == "hud_elem_type" then
-			if value ~= old_hud_def.hud_elem_type then
+			if value ~= (old_hud_def.type or old_hud_def.hud_elem_type) then
 				error("cannot change hud_elem_type")
+			end
+		elseif key == "type" then
+			if value ~= (old_hud_def.type or old_hud_def.hud_elem_type) then
+				error("cannot change type")
 			end
 		elseif key == self._id_field then
 			if value ~= self._id then
