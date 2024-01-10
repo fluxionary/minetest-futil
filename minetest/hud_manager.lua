@@ -1,10 +1,19 @@
 --[[
-local my_hud = futil.define_hud("my_hud", {
+local my_hud = futil.define_hud("my_mod:my_hud", {
 	period = 1,
-	get_hud_def = function(player)
+	catchup = nil,  -- not currently supported
+	name_field = nil,  -- in case you want to override the id field
+	enabled_by_default = nil,  -- set to true to enable by default
+	get_hud_data = function()
+		-- get data that's identical for all players
+		-- passed to get_hud_def
+	end,
+	get_hud_def = function(player, data)
 		return {}
 	end,
 })
+
+my_hud:toggle_enabled(player)
 ]]
 
 local f = string.format
@@ -14,7 +23,7 @@ local ManagedHud = futil.class1()
 function ManagedHud:_init(hud_name, def)
 	self.name = hud_name
 
-	self._name_field = def.name_field or "name"
+	self._name_field = def.name_field or ((def.type or def.hud_elem_type) == "waypoint" and "text2" or "name")
 	self._period = def.period
 	self._get_hud_data = def.get_hud_data
 	self._get_hud_def = def.get_hud_def
@@ -114,6 +123,28 @@ function futil.define_hud(hud_name, def)
 	return hud
 end
 
+-- TODO: register_hud instead of define_hud, plus alias the old
+
+local function update_hud(hud, players)
+	local data
+	if hud._get_hud_data then
+		local is_any_enabled = false
+		for i = 1, #players do
+			if hud:is_enabled(players[i]) then
+				is_any_enabled = true
+				break
+			end
+		end
+		if is_any_enabled then
+			data = hud._get_hud_data()
+		end
+	end
+	for i = 1, #players do
+		hud:update(players[i], data)
+	end
+end
+
+-- TODO refactor to use futil.register_globalstep for each hud, to allow use of catchup mechanics
 local elapsed_by_hud_name = {}
 minetest.register_globalstep(function(dtime)
 	local players = minetest.get_connected_players()
@@ -127,23 +158,10 @@ minetest.register_globalstep(function(dtime)
 				elapsed_by_hud_name[hud_name] = elapsed
 			else
 				elapsed_by_hud_name[hud_name] = 0
-				local data
-				if hud._get_hud_data then
-					local is_any_enabled = false
-					for i = 1, #players do
-						if hud:is_enabled(players[i]) then
-							is_any_enabled = true
-							break
-						end
-					end
-					if is_any_enabled then
-						data = hud._get_hud_data()
-					end
-				end
-				for i = 1, #players do
-					hud:update(players[i], data)
-				end
+				update_hud(hud, players)
 			end
+		else
+			update_hud(hud, players)
 		end
 	end
 end)
