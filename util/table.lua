@@ -9,6 +9,12 @@ function futil.table.set_all(t1, t2)
 	return t1
 end
 
+function futil.table.compose(t1, t2)
+	local t = table.copy(t1)
+	futil.table.set_all(t, t2)
+	return t
+end
+
 function futil.table.pairs_by_value(t, cmp)
 	cmp = cmp or default_cmp
 	local s = {}
