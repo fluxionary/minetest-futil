@@ -6,7 +6,11 @@ local function sorter(a, b)
 	if ta ~= tb then
 		return ta < tb
 	end
-	return a < b
+	if ta == "function" or ta == "userdata" or ta == "thread" or ta == "table" then
+		return tostring(a) < tostring(b)
+	else
+		return a < b
+	end
 end
 
 local keywords = {
