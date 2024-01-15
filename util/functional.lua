@@ -61,9 +61,11 @@ function functional.map(func, ...)
 end
 
 function functional.apply(func, t)
+	local t2 = {}
 	for k, v in pairs(t) do
-		t[k] = func(v)
+		t2[k] = func(v)
 	end
+	return t2
 end
 
 function functional.reduce(func, t, initial)
