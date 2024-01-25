@@ -65,7 +65,7 @@ function EphemeralHud:change(new_hud_def)
 			end
 		else
 			if value ~= old_hud_def[key] then
-				player:hud_change(self._id, key, value)
+				player:hud_change(self._hud_id, key, value)
 			end
 		end
 	end
