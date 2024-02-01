@@ -393,3 +393,10 @@ function futil.vector.closest_point_to_two_lines(last_pos, last_vel, cur_pos, cu
 	local E = B + b * ((ab * ac - bc * a2) / denom)
 	return (D + E) / 2
 end
+
+function futil.vector.v2f_to_float_32(v)
+	return {
+		x = futil.math.to_float32(v.x),
+		y = futil.math.to_float32(v.y),
+	}
+end

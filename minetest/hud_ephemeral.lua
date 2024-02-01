@@ -64,7 +64,11 @@ function EphemeralHud:change(new_hud_def)
 				error(f("cannot change the value of %q, as this is an ID", self._id_field))
 			end
 		else
-			if value ~= old_hud_def[key] then
+			if key == "position" or key == "scale" or key == "align" or key == "offset" then
+				value = futil.vector.v2f_to_float_32(value)
+			end
+
+			if not futil.equals(old_hud_def[key], value) then
 				player:hud_change(self._hud_id, key, value)
 			end
 		end

@@ -65,13 +65,6 @@ function ManagedHud:toggle_enabled(player)
 	return enabled
 end
 
-local function v2f_to_float_32(v)
-	return {
-		x = futil.math.to_float32(v.x),
-		y = futil.math.to_float32(v.y),
-	}
-end
-
 function ManagedHud:update(player, data)
 	local is_enabled = self:is_enabled(player)
 	local player_name = player:get_player_name()
@@ -107,7 +100,7 @@ function ManagedHud:update(player, data)
 		if old_hud_def then
 			for k, v in pairs(new_hud_def) do
 				if k == "position" or k == "scale" or k == "align" or k == "offset" then
-					v = v2f_to_float_32(v)
+					v = futil.vector.v2f_to_float_32(v)
 				end
 
 				if not futil.equals(old_hud_def[k], v) and k ~= "type" and k ~= "hud_elem_type" then
