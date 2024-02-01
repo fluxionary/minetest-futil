@@ -1,6 +1,7 @@
 futil.math = {}
 
 local floor = math.floor
+local huge = math.huge
 local max = math.max
 local min = math.min
 
@@ -149,4 +150,13 @@ function futil.math.round(number, mult)
 	else
 		return round(number)
 	end
+end
+
+-- TODO this doesn't handle out-of-bounds exponents
+function futil.math.to_float32(number)
+	if number == huge or number == -huge or number ~= number then
+		return number
+	end
+	local sign, significand, exponent = ("%a"):format(number):match("^(-?)0x([0-9a-f\\.]+)p([0-9+-]+)$")
+	return tonumber(("%s0x%sp%s"):format(sign, significand:sub(1, 8), exponent))
 end
