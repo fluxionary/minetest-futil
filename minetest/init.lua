@@ -19,4 +19,5 @@ if INIT == "game" then
 	futil.dofile("minetest", "object")
 	futil.dofile("minetest", "object_properties")
 	futil.dofile("minetest", "player")
+	futil.dofile("minetest", "raycast")
 end
