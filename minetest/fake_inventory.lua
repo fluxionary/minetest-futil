@@ -198,7 +198,8 @@ function FakeInventory:remove_item(listname, stack)
 	local count_remaining = stack:get_count()
 	local taken = 0
 
-	for _, our_stack in ipairs(list) do
+	for i = #list, 1, -1 do
+		local our_stack = list[i]
 		if our_stack:get_name() == name then
 			local n = our_stack:take_item(count_remaining):get_count()
 			count_remaining = count_remaining - n
