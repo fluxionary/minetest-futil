@@ -1,5 +1,7 @@
 local idiv = futil.math.idiv
 
+-- convert a number of seconds into a more human-readable value
+-- ignores the actual passage of time and assumes all years are 365 days
 function futil.seconds_to_interval(time)
 	local s, m, h, d
 
@@ -17,10 +19,11 @@ function futil.seconds_to_interval(time)
 	elseif m ~= 0 then
 		return ("%02d:%02d"):format(m, s)
 	else
-		return ("%d seconds"):format(s)
+		return ("%ds"):format(s)
 	end
 end
 
+-- ISO 8601 date format
 function futil.format_utc(timestamp)
 	return os.date("!%Y-%m-%dT%TZ", timestamp)
 end

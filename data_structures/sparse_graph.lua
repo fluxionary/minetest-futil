@@ -18,11 +18,15 @@ function SparseGraph:add_vertex()
 end
 
 function SparseGraph:add_edge(a, b)
-	assert(a <= self._size, f("invalid vertex %s", a))
-	assert(b <= self._size, f("invalid vertex %s", b))
+	assert(1 <= a and a <= self._size, f("invalid vertex a %s", a))
+	assert(1 <= b and b <= self._size, f("invalid vertex b %s", b))
 	self._adj_by_vertex[a]:add(b)
 end
 
-function SparseGraph:are_adjacent(a, b)
+function SparseGraph:has_edge(a, b)
+	assert(1 <= a and a <= self._size, f("invalid vertex a %s", a))
+	assert(1 <= b and b <= self._size, f("invalid vertex b %s", b))
 	return self._adj_by_vertex[a]:contains(b)
 end
+
+futil.SparseGraph = SparseGraph

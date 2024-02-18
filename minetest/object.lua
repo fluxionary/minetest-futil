@@ -170,3 +170,11 @@ function futil.get_object_center(object)
 	local cb = object:get_properties().collisionbox
 	return v_new(pos.x + (cb[1] + cb[4]) / 2, pos.y + (cb[2] + cb[5]) / 2, pos.z + (cb[3] + cb[6]) / 2)
 end
+
+function futil.is_player(obj)
+	return minetest.is_player(obj) and not obj.is_fake_player
+end
+
+function futil.is_valid_object(obj)
+	return obj and type(obj.get_pos) == "function" and vector.check(obj:get_pos())
+end
