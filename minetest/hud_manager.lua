@@ -149,6 +149,7 @@ local function update_hud(hud, players)
 end
 
 -- TODO refactor to use futil.register_globalstep for each hud, to allow use of catchup mechanics
+-- ... why would HUD updates need catchup mechanics?
 local elapsed_by_hud_name = {}
 minetest.register_globalstep(function(dtime)
 	local players = minetest.get_connected_players()

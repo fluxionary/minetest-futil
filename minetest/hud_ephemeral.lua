@@ -88,6 +88,7 @@ end
 
 futil.EphemeralHud = EphemeralHud
 
+-- note: sometimes HUDs can fail to get created. if so, the HUD object returned here will be "inactive".
 function futil.create_ephemeral_hud(player, timeout, hud_def)
 	local hud = EphemeralHud(player, hud_def)
 	minetest.after(timeout, function()
