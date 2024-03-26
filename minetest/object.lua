@@ -178,3 +178,22 @@ end
 function futil.is_valid_object(obj)
 	return obj and type(obj.get_pos) == "function" and vector.check(obj:get_pos())
 end
+
+-- this is meant to be able to get the HP of any object, including "immortal" ones whose health is managed themselves
+-- it is *NOT* complete - i've got no idea where every mob API stores its hp.
+-- "health" is mobs_redo (which is actually redundant with `:get_hp()` because they're not actually immortal.
+-- "hp" is mobkit (and petz, which comes with its own fork of mobkit), and also creatura.
+function futil.get_hp(obj)
+	if not futil.is_valid_object(obj) then
+		return 0
+	end
+	local ent = obj:get_luaentity()
+	if ent and (type(ent.hp) == "number" or type(ent.health) == "number") then
+		return ent.hp or ent.health
+	end
+	local armor_groups = obj:get_armor_groups()
+	if (armor_groups["immortal"] or 0) == 0 then
+		return obj:get_hp()
+	end
+	return math.huge -- presumably actually immortal
+end
