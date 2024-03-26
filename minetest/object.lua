@@ -185,6 +185,7 @@ end
 -- "hp" is mobkit (and petz, which comes with its own fork of mobkit), and also creatura.
 function futil.get_hp(obj)
 	if not futil.is_valid_object(obj) then
+		-- not an object or dead
 		return 0
 	end
 	local ent = obj:get_luaentity()
