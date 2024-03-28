@@ -150,4 +150,10 @@ function functional.any(t)
 	return false
 end
 
+function futil.functional.wrap(f)
+	return function(...)
+		return f(...)
+	end
+end
+
 futil.functional = functional
