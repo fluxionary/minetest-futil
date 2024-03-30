@@ -150,7 +150,7 @@ function functional.any(t)
 	return false
 end
 
-function futil.functional.wrap(f)
+function functional.wrap(f)
 	return function(...)
 		return f(...)
 	end
