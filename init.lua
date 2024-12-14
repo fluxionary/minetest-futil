@@ -1,4 +1,4 @@
-fmod.check_version({ year = 2023, month = 7, day = 14 }) -- async dofile
+fmod.check_version({ year = 2024, month = 12, day = 14 }) -- async dofile
 
 futil = fmod.create()
 
